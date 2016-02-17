@@ -1,0 +1,41 @@
+body {
+    background-color:#fff;
+//    background-image: url("../images/Seamless-Green-Grass-Texture.jpg");
+    font-family: Georgia;
+}
+
+#wrapper {
+    width: 900px;
+    margin: 0 auto;
+    //border: 1px solid black;
+}
+
+#gamewindow { 
+    background-color:#fff;
+    border: 5px solid green;
+    align-self: flex-end;
+    position: relative;
+//    margin-left: 20%;
+}
+
+#log{
+    float:right;
+}
+
+#game {
+    align-content: center;
+    //border: 1px solid black;
+}
+
+#tiag {
+    text-align: center;
+    color: #fff;
+}
+
+nav {
+    float: left;
+}
+
+nav a {
+    text-decoration: none;
+}
