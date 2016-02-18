@@ -10,6 +10,7 @@ var buttons = {};
 var durationGame = 0;
 var isGamePaused = false;
 
+window.onload = init;
 rocketMoveStep = 50;
 
 var requestAnimFrame = (function() {
@@ -36,138 +37,13 @@ var requestID = requestAnimFrame(main);
 function main() {
     var now = Date.now();
     var dt = (now - lastTime) / 1000.0;
-    if(!isGamePaused){
     render();
-    update(dt);
+    if (!isGamePaused) {
+
+        update(dt);
     }
     lastTime = now;
     requestID = requestAnimFrame(main);
-}
-
-function CRocket() {
-    this.ball = [];
-    this.width = 120;
-    this.height = 10;
-    this.x = ((cnvs.clientWidth) / 2) - (this.width / 2);
-    this.y = cnvs.clientHeight - this.height;
-    this.draw = function() {
-        context.beginPath();
-        context.moveTo(this.x, this.y);
-        context.lineTo(this.x + this.width, this.y);
-        context.stroke();
-        for (var i = 0; i < this.ball.length; i++) {
-            if (this.ball[i] !== undefined) {
-                this.ball[i].x = (this.x + (this.width / 2)) - ((((this.ball[i].width * this.ball.length / 2)))) + (this.ball[i].width * i);
-                this.ball[i].y = this.y - this.ball[i].height;
-                this.ball[i].draw();
-            }
-        }
-    }
-    this.update = function(dx) {
-        if (this.ball.length == 3)
-            this.ball = [];
-    }
-
-    this.moveTo = function(dx) {
-        if (dx < 0) {
-            this.x = 0;
-            return;
-        }
-        if (dx > cnvs.clientWidth - this.width) {
-            this.x = cnvs.clientWidth - this.width;
-            return;
-        }
-        this.x = dx;
-    }
-
-    this.move = function(offset) {
-        if (this.x + offset < 0) {
-            this.x = 0;
-            return;
-        } else if (this.x + this.width + offset > cnvs.clientWidth) {
-            this.x = cnvs.clientWidth - this.width;
-            return;
-        }
-        this.x += offset;
-    }
-
-    this.cth = function(ball) {
-        if (this.ball.length < 3) {
-            this.ball[this.ball.length] = new CBall();
-            this.ball[this.ball.length - 1] = ball;
-            if (this.ball[this.ball.length - 1].color == this.ball[0].color) {
-                score += 1;
-            } else {
-                gameOver();
-            }
-        } else {
-            this.ball = null;
-        }
-    }
-}
-
-function CButton(x, y, width, height, url, callback) {
-    this.width = width;
-    this.height = height;
-    this.initPosX = x;
-    this.initPosY = y;
-    this.offset = 0;
-    this.x = this.initPosX + this.offset;
-    this.y = this.initPosY + this.offset;
-
-    this.picture = new Image();
-    this.picture.src = url;
-    this.draw = function() {
-        context.drawImage(this.picture, this.x, this.y, this.width, this.height);
-    }
-
-    this.update = function() {
-        this.x = this.initPosX + this.offset;
-        this.y = this.initPosY + this.offset;
-    }
-
-    this.click = function(mouseX, mouseY) {
-        if ((this.x + this.offset) < mouseX && (this.x + this.offset) + this.width >= mouseX)
-            if ((this.y + this.offset) < mouseY && (this.y + this.offset) + this.height > mouseY)
-                this.onclick();
-    }
-    this.onHover = function() {
-        if (this.x < mouseX && this.x + this.width >= mouseX) {
-            if (this.y < mouseY && this.y + this.height > mouseY) {
-                this.offset = 2;
-                this.update();
-            }
-        } else {
-            this.offset = 0;
-            this.update();
-        }
-    }
-
-    this.onclick = callback;
-}
-
-function CBall() {
-    this.picture = new Image();
-    this.multiplier = Math.random();
-    this.changeParams = function() {
-        this.x = Math.floor(Math.random() * (cnvs.clientWidth - this.width));
-        this.y = Math.floor(Math.random() * -1200) - this.height;
-        this.color = Math.floor(Math.random() * 10) + 1;
-        this.picture.src = 'images/ball(' + this.color + ').png';
-        this.width = this.picture.naturalWidth;
-        this.height = this.picture.naturalHeight;
-    }
-    this.draw = function() {
-        context.drawImage(this.picture, this.x, this.y);
-    }
-
-    this.update = function(dt) {
-        if (this.y <= cnvs.height) {
-            this.y += Math.ceil(dt * ballSpeed + this.multiplier);
-        } else {
-            this.changeParams();
-        }
-    }
 }
 
 function stop() {
@@ -184,13 +60,12 @@ function pause() {
      }*/
 }
 function reset() {
-//    pause();
     init();
 }
 
 function gameOver() {
     isGameOver = true;
-    var message = "Game Over !"
+    var message = "GAME OVER !"
     context.save();
     context.fillStyle = "rgba(255, 255, 255, 1)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
@@ -204,6 +79,9 @@ function gameOver() {
 }
 
 function update(dt) {
+    if(isGamePaused){
+        return;
+    }
     for (var i = 0; i < balls.length; i++) {
         balls[i].update(dt);    
         if (balls[i].x + balls[i].width > rocket.x && balls[i].x < rocket.x + rocket.width && balls[i].y + balls[i].height > rocket.y) {
@@ -221,8 +99,8 @@ function update(dt) {
 
 function render() {
     context.clearRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
-    for (var i = 0; i < balls.length; i++) {
-        balls[i].draw();
+    for(var key in balls){
+        balls[key].draw();
     }
     buttons['refresh'].draw();
     buttons['pause'].draw();
@@ -245,12 +123,12 @@ function init() {
     if (!context) {
         return;
     }
-    setOtions();
+    setOptions();
     menu();
 }
 
-function setOtions() {
-    context.font = "20px Tahoma";
+function setOptions() {
+    context.font = "20px Arial";
     context.fillStyle = "black";
     for (var i = 0; i < ballCount; i++)
         balls[i] = new CBall();
@@ -263,7 +141,6 @@ function setOtions() {
     ballSpeed = 100;
     isGamePaused = false;
     isGameOver = false;
-
 }
 
 
@@ -305,14 +182,18 @@ function mousemove(evt) {
     for (var key in buttons){
         buttons[key].onHover(mouseX,mouseY);
     }
+    if(!isGamePaused) {
         rocket.moveTo(mouseX);
+    }
 }
 
 function keydown(evt) {
+    if(isGamePaused){
+        return;
+    }
     keyCode = evt.keyCode;
     if (keyCode == 37)
         rocket.move(-rocketMoveStep);
     if (keyCode == 39)
         rocket.move(rocketMoveStep);
 }
-
