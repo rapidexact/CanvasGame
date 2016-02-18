@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>This is Game !</title>
+    <title>Canvas Game</title>
     <link href="css/style.css" type="text/css" rel="stylesheet">
     <meta charset="utf-8">
     <script src="js/game.js"></script>

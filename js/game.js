@@ -6,9 +6,10 @@ var ballCount = 10;
 var rocket;
 var isGameOver = false;
 var score;
-var buttons = [];
+var buttons = {};
 var durationGame = 0;
-var grassPattern;
+var isGamePaused = false;
+
 rocketMoveStep = 50;
 
 var requestAnimFrame = (function() {
@@ -35,15 +36,15 @@ var requestID = requestAnimFrame(main);
 function main() {
     var now = Date.now();
     var dt = (now - lastTime) / 1000.0;
+    if(!isGamePaused){
     render();
     update(dt);
+    }
     lastTime = now;
     requestID = requestAnimFrame(main);
 }
 
 function CRocket() {
-    //this.w = img2.naturalWidth;
-    //this.h = img2.naturalHeight;
     this.ball = [];
     this.width = 120;
     this.height = 10;
@@ -170,12 +171,20 @@ function CBall() {
 }
 
 function stop() {
-    rocket = null;
-    cancelAnimationFrame(requestID);
+    isGamePaused = true;
 }
 
+function pause() {
+    isGamePaused = isGamePaused ? false : true;
+    /*if (requestID === undefined) {
+     lastTime = Date.now();
+     requestID = requestAnimFrame(main);
+     } else {
+     requestID = cancelAnimationFrame(requestID);
+     }*/
+}
 function reset() {
-    stop();
+//    pause();
     init();
 }
 
@@ -189,9 +198,9 @@ function gameOver() {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText(message, cnvs.clientWidth / 2, cnvs.clientHeight / 2);
-    buttons[0] = new CButton(cnvs.clientWidth / 2 - buttons[0].width / 2, cnvs.clientHeight / 2 + 20, 30, 31, '../images/refresh.png', reset);
-    buttons[0].draw();
-    stop();
+    buttons['refresh'] = new CButton(cnvs.clientWidth / 2 - buttons['refresh'].width / 2, cnvs.clientHeight / 2 + 20, 30, 31, 'images/refresh.png', reset);
+    buttons['refresh'].draw();
+    pause();
 }
 
 function update(dt) {
@@ -211,14 +220,12 @@ function update(dt) {
 }
 
 function render() {
-    //    context.fillStyle = grassPattern;
-    //    context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.clearRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     for (var i = 0; i < balls.length; i++) {
         balls[i].draw();
     }
-    buttons[0].draw();
-    buttons[2].draw();
+    buttons['refresh'].draw();
+    buttons['pause'].draw();
     rocket.draw();
     context.textAlign = 'end';
     context.fillText('Score : ' + score, cnvs.width - 10, 20);
@@ -229,6 +236,7 @@ function init() {
     window.document.addEventListener('click', click, true);
     window.onmousemove = mousemove;
     window.onkeydown = keydown;
+    window.onblur = stop;
     cnvs = document.getElementById('gamewindow');
     if (!cnvs || !cnvs.getContext) {
         return;
@@ -247,31 +255,22 @@ function setOtions() {
     for (var i = 0; i < ballCount; i++)
         balls[i] = new CBall();
     rocket = new CRocket();
-    buttons[0] = new CButton(10, 10, 30, 31, 'images/refresh.png', reset);
-    buttons[1] = new CButton(cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 20, 30, 31, 'images/play.png', main);
-    buttons[2] = new CButton(50, 10, 30, 31, 'images/pause.png', pause);
+    buttons['refresh'] = new CButton(10, 10, 30, 31, 'images/refresh.png', reset);
+    buttons['play'] = new CButton(cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 20, 30, 31, 'images/play.png', main);
+    buttons['pause'] = new CButton(50, 10, 30, 31, 'images/pause.png', pause);
     lastTime = Date.now();
     score = 0;
     ballSpeed = 100;
+    isGamePaused = false;
     isGameOver = false;
-    //    img.src = '../images/Seamless-Green-Grass-Texture.jpg';
-    //    grassPattern = context.createPattern(img,'repeat');
 
 }
 
-function pause() {
-    if (requestID === undefined) {
-        lastTime = Date.now();
-        requestID = requestAnimFrame(main);
-    } else {
-        requestID = cancelAnimationFrame(requestID);
-    }
-}
 
 
 function menu() {
     var message = "Welcome !"
-    var instructions = "Для перемещения каретки используйте мышь либо стрелочки на клавиатуре";
+    var instructions = "For moving rocket use mouse of keyboard arrows";
     context.save();
     context.fillStyle = "rgba(255, 255, 255, 1)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
@@ -280,8 +279,13 @@ function menu() {
     context.textBaseline = 'middle';
     context.fillText(message, cnvs.clientWidth / 2, cnvs.clientHeight / 2);
     context.fillText(instructions, cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 80)
-    buttons[1] = new CButton(cnvs.clientWidth / 2 - buttons[1].width / 2, cnvs.clientHeight / 2 + 20, 30, 31, 'images/play.png', main);
-    buttons[1].draw();
+    buttons['play'] = new CButton(cnvs.clientWidth / 2 - buttons['play'].width / 2, cnvs.clientHeight / 2 + 20, 30, 31, 'images/play.png', main);
+    buttons['play'].draw();
+}
+
+
+function pauseScreen(){
+
 }
 
 var mouseX;
@@ -290,17 +294,18 @@ var mouseY;
 function click(evt) {
     mouseX = evt.pageX - cnvs.offsetLeft;
     mouseY = evt.pageY - cnvs.offsetTop;
-    for (var i = 0; i < buttons.length; i++)
-        buttons[i].click(mouseX, mouseY);
+    for (var key in buttons){
+        buttons[key].click(mouseX,mouseY);
+    }
 }
 
 function mousemove(evt) {
     mouseX = evt.pageX - cnvs.offsetLeft;
     mouseY = evt.pageY - cnvs.offsetTop;
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].onHover(mouseX, mouseY);
+    for (var key in buttons){
+        buttons[key].onHover(mouseX,mouseY);
     }
-    rocket.moveTo(mouseX);
+        rocket.moveTo(mouseX);
 }
 
 function keydown(evt) {
@@ -310,3 +315,4 @@ function keydown(evt) {
     if (keyCode == 39)
         rocket.move(rocketMoveStep);
 }
+
