@@ -7,14 +7,14 @@ function Ball() {
     this.changeParams = function() {
         this.x = Math.floor(Math.random() * (cnvs.clientWidth - this.width));
         this.y = Math.floor(Math.random() * -1200) - this.height;
-        this.color = Math.floor(Math.random() * 10) + 1;
-        this.picture.src = 'images/ball(' + this.color + ').png';
-        this.width = this.picture.naturalWidth;
-        this.height = this.picture.naturalHeight;
-    }
+        this.color = Math.floor(Math.random() * 5) + 1;
+        this.picture.src = 'images/balls(' + this.color + ').png';
+        this.width = 70;//this.picture.naturalWidth;
+        this.height = 70;//this.picture.naturalHeight;
+    };
     this.draw = function() {
-        context.drawImage(this.picture, this.x, this.y);
-    }
+        context.drawImage(this.picture, this.x, this.y,this.width,this.height);
+    };
 
     this.update = function(dt) {
         if (this.y <= cnvs.height) {

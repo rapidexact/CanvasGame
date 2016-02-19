@@ -11,7 +11,6 @@ function Button(x, y, width, height, url, callback) {
     this.isVisible = false;
     this.x = this.initPosX + this.offset;
     this.y = this.initPosY + this.offset;
-
     this.picture = new Image();
     this.picture.src = url;
     this.moveTo = function(x,y){
@@ -35,12 +34,12 @@ function Button(x, y, width, height, url, callback) {
         this.onclick();
     };
     this.onmouseon = function() {
-        log.innerHTML = document.getElementById('gamewindow').style.cursor = 'pointer';
+        document.getElementById('gamewindow').style.cursor = 'pointer';
         this.offset = 2;
         this.update();
     };
     this.onmouseout = function(){
-        log.innerHTML = document.getElementById('gamewindow').style.cursor = 'default';
+         document.getElementById('gamewindow').style.cursor = 'default';
         this.offset = 0;
         this.update();
     };

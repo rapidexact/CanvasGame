@@ -9,9 +9,10 @@ var score;
 var buttons = {};
 var durationGame = 0;
 var isGamePaused = false;
+var rocketMoveStep = 50;
 
 window.onload = init;
-rocketMoveStep = 50;
+
 
 var requestAnimFrame = (function() {
     return window.requestAnimationFrame ||
@@ -70,6 +71,8 @@ function gameOver() {
 }
 
 function update(dt) {
+
+
     if(isGamePaused){
         pauseScreen();
         return;
@@ -97,8 +100,10 @@ function update(dt) {
 }
 
 function play(){
+    //alert();
     isGamePaused = false;
-    startScreen();
+    main();
+    //startScreen();
 }
 
 function isCollision(objA, objB){
@@ -156,6 +161,7 @@ function defineParams() {
     lastTime = Date.now();
     score = 0;
     ballSpeed = 100;
+    durationGame = 0;
     isGameOver = false;
     isGamePaused = true;
 }
@@ -179,11 +185,15 @@ function startScreen() {
 
 
 function pauseScreen(){
-    /*context.save();
+ /*   context.save();
     context.fillStyle = "rgba(255, 255, 255, 0.5)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText("Paused", cnvs.clientWidth / 2, cnvs.clientHeight / 2);
+
     context.restore();
-    */
+*/
     startScreen();
 }
 
