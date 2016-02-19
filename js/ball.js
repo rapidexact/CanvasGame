@@ -1,7 +1,7 @@
 /**
  * Created by alexander on 18.02.16.
  */
-function CBall() {
+function Ball() {
     this.picture = new Image();
     this.multiplier = Math.random();
     this.changeParams = function() {

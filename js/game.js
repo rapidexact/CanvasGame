@@ -38,10 +38,7 @@ function main() {
     var now = Date.now();
     var dt = (now - lastTime) / 1000.0;
     render();
-    if (!isGamePaused) {
-
-        update(dt);
-    }
+    update(dt);
     lastTime = now;
     requestID = requestAnimFrame(main);
 }
@@ -51,13 +48,8 @@ function stop() {
 }
 
 function pause() {
-    isGamePaused = isGamePaused ? false : true;
-    /*if (requestID === undefined) {
-     lastTime = Date.now();
-     requestID = requestAnimFrame(main);
-     } else {
-     requestID = cancelAnimationFrame(requestID);
-     }*/
+    isGamePaused = true;
+    //isGamePaused = isGamePaused ? false : true;
 }
 function reset() {
     init();
@@ -73,23 +65,30 @@ function gameOver() {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText(message, cnvs.clientWidth / 2, cnvs.clientHeight / 2);
-    buttons['refresh'] = new CButton(cnvs.clientWidth / 2 - buttons['refresh'].width / 2, cnvs.clientHeight / 2 + 20, 30, 31, 'images/refresh.png', reset);
+    buttons['refresh'].moveTo(cnvs.clientWidth / 2 - 30/ 2,cnvs.clientHeight / 2 + 20);
     buttons['refresh'].draw();
-    pause();
 }
 
 function update(dt) {
     if(isGamePaused){
+        pauseScreen();
         return;
     }
-    for (var i = 0; i < balls.length; i++) {
-        balls[i].update(dt);    
-        if (balls[i].x + balls[i].width > rocket.x && balls[i].x < rocket.x + rocket.width && balls[i].y + balls[i].height > rocket.y) {
-            rocket.cth(balls[i]);
-            balls[i] = new CBall();
+
+    if(isGameOver){
+        gameOver();
+        return;
+    }
+
+    for (var key in balls) {
+        balls[key].update(dt);
+        if(isCollision(balls[key],rocket)){
+            rocket.cth(balls[key]);
+            balls[key] = new Ball();
         }
     }
     rocket.update();
+
     if (durationGame / 10 > 1) {
         durationGame = 0;
         ballSpeed += 10;
@@ -97,7 +96,24 @@ function update(dt) {
     durationGame += dt;
 }
 
+function play(){
+    isGamePaused = false;
+    startScreen();
+}
+
+function isCollision(objA, objB){
+    return (objA.x + objA.width > objB.x && objA.x < objB.x + objB.width && objA.y + objA.height > objB.y) ? true : false;
+}
+
+function isEntry(objA,pointX,pointY){
+    return isCollision(objA, {x : pointX, y : pointY, width : 1, height : 1});
+}
+
+
 function render() {
+    if(isGamePaused){
+        return;
+    }
     context.clearRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     for(var key in balls){
         balls[key].draw();
@@ -105,6 +121,7 @@ function render() {
     buttons['refresh'].draw();
     buttons['pause'].draw();
     rocket.draw();
+
     context.textAlign = 'end';
     context.fillText('Score : ' + score, cnvs.width - 10, 20);
     context.fillText('Ball speed : ' + ballSpeed, cnvs.width - 10, 40);
@@ -123,29 +140,29 @@ function init() {
     if (!context) {
         return;
     }
-    setOptions();
-    menu();
+    defineParams();
+    startScreen();
 }
 
-function setOptions() {
+function defineParams() {
     context.font = "20px Arial";
     context.fillStyle = "black";
     for (var i = 0; i < ballCount; i++)
-        balls[i] = new CBall();
-    rocket = new CRocket();
-    buttons['refresh'] = new CButton(10, 10, 30, 31, 'images/refresh.png', reset);
-    buttons['play'] = new CButton(cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 20, 30, 31, 'images/play.png', main);
-    buttons['pause'] = new CButton(50, 10, 30, 31, 'images/pause.png', pause);
+        balls[i] = new Ball();
+    rocket = new Rocket();
+    buttons['refresh'] = new Button(10, 10, 30, 31, 'images/refresh.png', reset);
+    buttons['play'] = new Button(cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 20, 30, 31, 'images/play.png', play);
+    buttons['pause'] = new Button(50, 10, 30, 31, 'images/pause.png', pause);
     lastTime = Date.now();
     score = 0;
     ballSpeed = 100;
-    isGamePaused = false;
     isGameOver = false;
+    isGamePaused = true;
 }
 
 
 
-function menu() {
+function startScreen() {
     var message = "Welcome !"
     var instructions = "For moving rocket use mouse of keyboard arrows";
     context.save();
@@ -155,14 +172,19 @@ function menu() {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText(message, cnvs.clientWidth / 2, cnvs.clientHeight / 2);
-    context.fillText(instructions, cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 80)
-    buttons['play'] = new CButton(cnvs.clientWidth / 2 - buttons['play'].width / 2, cnvs.clientHeight / 2 + 20, 30, 31, 'images/play.png', main);
+    context.fillText(instructions, cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 80);
+    buttons['play'].moveTo(cnvs.clientWidth / 2 - 15,  cnvs.clientHeight / 2 + 20);
     buttons['play'].draw();
 }
 
 
 function pauseScreen(){
-
+    /*context.save();
+    context.fillStyle = "rgba(255, 255, 255, 0.5)";
+    context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
+    context.restore();
+    */
+    startScreen();
 }
 
 var mouseX;
@@ -172,7 +194,10 @@ function click(evt) {
     mouseX = evt.pageX - cnvs.offsetLeft;
     mouseY = evt.pageY - cnvs.offsetTop;
     for (var key in buttons){
-        buttons[key].click(mouseX,mouseY);
+        if (isEntry(buttons[key],mouseX,mouseY)){
+            buttons[key].click();
+            return;
+        }
     }
 }
 
@@ -180,7 +205,12 @@ function mousemove(evt) {
     mouseX = evt.pageX - cnvs.offsetLeft;
     mouseY = evt.pageY - cnvs.offsetTop;
     for (var key in buttons){
-        buttons[key].onHover(mouseX,mouseY);
+        if(isEntry(buttons[key],mouseX,mouseY)){
+            log.innerHTML=key;
+            buttons[key].onmouseon();
+        }   else{
+            buttons[key].onmouseout();
+        }
     }
     if(!isGamePaused) {
         rocket.moveTo(mouseX);
@@ -196,4 +226,35 @@ function keydown(evt) {
         rocket.move(-rocketMoveStep);
     if (keyCode == 39)
         rocket.move(rocketMoveStep);
+}
+
+
+/**
+ * аналог PHP-шной
+ * @param {Array/HTMLElement/Object} taV
+ */
+function print_r(taV)
+{
+    return getProps(taV);
+}
+
+/**
+ * возвращает список атрибутов объекта и значения
+ * @param {Element/Object} toObj - ссылка на объект
+ * @param {String} tcSplit - строка разделитель строк
+ * @return {String} - строку со списком атрибутов объекта
+ * и значениями атрибутов
+ */
+function getProps(toObj, tcSplit)
+{
+    if (!tcSplit) tcSplit = '\n';
+    var lcRet = '';
+    var lcTab = '    ';
+
+    for (var i in toObj) // обращение к свойствам объекта по индексу
+        lcRet += lcTab + i + " : " + toObj[i] + tcSplit;
+
+    lcRet = '{' + tcSplit + lcRet + '}';
+
+    return lcRet;
 }

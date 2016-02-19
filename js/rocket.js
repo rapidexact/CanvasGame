@@ -1,7 +1,7 @@
 /**
  * Created by alexander on 18.02.16.
  */
-function CRocket() {
+function Rocket() {
     this.ball = [];
     this.width = 120;
     this.height = 10;
@@ -50,7 +50,7 @@ function CRocket() {
 
     this.cth = function(ball) {
         if (this.ball.length < 3) {
-            this.ball[this.ball.length] = new CBall();
+            this.ball[this.ball.length] = new Ball();
             this.ball[this.ball.length - 1] = ball;
             if (this.ball[this.ball.length - 1].color == this.ball[0].color) {
                 score += 1;
