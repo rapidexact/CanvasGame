@@ -1,7 +1,7 @@
 /**
  * Created by alexander on 18.02.16.
  */
-function Rocket() {
+function Basket() {
     this.ball = [];
     this.width = 120;
     this.height = 10;

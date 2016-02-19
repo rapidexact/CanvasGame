@@ -3,7 +3,7 @@ var ballSpeed;
 var balls = [];
 var lastTime;
 var ballCount = 10;
-var rocket;
+var basket;
 var isGameOver = false;
 var score;
 var buttons = {};
@@ -85,12 +85,12 @@ function update(dt) {
 
     for (var key in balls) {
         balls[key].update(dt);
-        if(isCollision(balls[key],rocket)){
-            rocket.cth(balls[key]);
+        if(isCollision(balls[key],basket)){
+            basket.cth(balls[key]);
             balls[key] = new Ball();
         }
     }
-    rocket.update();
+    basket.update();
 
     if (durationGame / 10 > 1) {
         durationGame = 0;
@@ -125,7 +125,7 @@ function render() {
     }
     buttons['refresh'].draw();
     buttons['pause'].draw();
-    rocket.draw();
+    basket.draw();
 
     context.textAlign = 'end';
     context.fillText('Score : ' + score, cnvs.width - 10, 20);
@@ -154,7 +154,7 @@ function defineParams() {
     context.fillStyle = "black";
     for (var i = 0; i < ballCount; i++)
         balls[i] = new Ball();
-    rocket = new Rocket();
+    basket = new Basket();
     buttons['refresh'] = new Button(10, 10, 30, 31, 'images/refresh.png', reset);
     buttons['play'] = new Button(cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 20, 30, 31, 'images/play.png', play);
     buttons['pause'] = new Button(50, 10, 30, 31, 'images/pause.png', pause);
@@ -223,7 +223,7 @@ function mousemove(evt) {
         }
     }
     if(!isGamePaused) {
-        rocket.moveTo(mouseX);
+        basket.moveTo(mouseX);
     }
 }
 
@@ -233,9 +233,9 @@ function keydown(evt) {
     }
     keyCode = evt.keyCode;
     if (keyCode == 37)
-        rocket.move(-rocketMoveStep);
+        basket.move(-rocketMoveStep);
     if (keyCode == 39)
-        rocket.move(rocketMoveStep);
+        basket.move(rocketMoveStep);
 }
 
 

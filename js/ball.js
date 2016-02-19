@@ -24,3 +24,14 @@ function Ball() {
         }
     }
 }
+
+function Balls(ballsCount){
+    this.count = ballsCount;
+    this.balls = [];
+    for (var i = 0; i < ballsCount; i++){
+        balls[i] = new Ball();
+    }
+    this.get = function(pos){
+        return balls[pos];
+    }
+}
