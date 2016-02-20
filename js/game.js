@@ -75,12 +75,17 @@ function gameOver() {
 }
 
 function update(dt) {
-   // document.getElementById('log').innerHTML = 1 + " ";
+    
+    if(durationGame==0){
+        startScreen();
+        return;
+    }
 
     if(isGamePaused){
         pauseScreen();
         return;
     }
+
 
     if(isGameOver){
         gameOver();
@@ -99,6 +104,7 @@ function update(dt) {
 
 function play(){
     isGamePaused = false;
+    durationGame++;
     //main();
     //startScreen();
 }
@@ -184,16 +190,18 @@ function startScreen() {
 
 
 function pauseScreen(){
- /*   context.save();
-    context.fillStyle = "rgba(255, 255, 255, 0.5)";
+    context.save();
+    context.fillStyle = "rgba(255, 255, 255, 1)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
+    context.fillStyle = "black";
+    //context.shadowColor = 'grey';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText("Paused", cnvs.clientWidth / 2, cnvs.clientHeight / 2);
-
     context.restore();
-*/
-    startScreen();
+    buttons['play'].moveTo(cnvs.clientWidth / 2 - 15,  cnvs.clientHeight / 2 + 20);
+    buttons['play'].draw();
+//    startScreen();
 }
 
 var mouseX;

@@ -8,10 +8,16 @@ function Basket() {
     this.x = ((cnvs.clientWidth) / 2) - (this.width / 2);
     this.y = cnvs.clientHeight - this.height;
     this.draw = function() {
+        context.save();
+        context.strokeStyle = '#EFBA48';
+        //context.shadowColor = 'black';
+        //context.shadowOffsetY = 0 ;
+        //context.shadowBlur = 2;
         context.beginPath();
         context.moveTo(this.x, this.y);
         context.lineTo(this.x + this.width, this.y);
         context.stroke();
+        context.restore();
         for (var i = 0; i < this.ball.length; i++) {
             if (this.ball[i] !== undefined) {
                 this.ball[i].x = (this.x + (this.width / 2)) - ((((this.ball[i].width * this.ball.length / 2)))) + (this.ball[i].width * i);

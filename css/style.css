@@ -27,7 +27,7 @@ body {
 
 #gamewindow {
     background-color:#fff;
-    border: 5px solid gray;
+    border: 3px solid #61b891;
     border-radius: 10px;
     align-self: flex-end;
     position: relative;
