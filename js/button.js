@@ -34,7 +34,7 @@ function Button(x, y, width, height, url, callback) {
         this.onclick();
     };
     this.onmouseon = function() {
-        alert(document.body.style.cursor = 'pointer');
+        document.body.style.cursor = 'pointer';
         this.offset = 2;
         this.update();
     };
