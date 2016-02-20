@@ -39,7 +39,7 @@ function Button(x, y, width, height, url, callback) {
         this.update();
     };
     this.onmouseout = function(){
-         document.getElementById('gamewindow').style.cursor = 'default';
+        document.getElementById('gamewindow').style.cursor = 'default';
         this.offset = 0;
         this.update();
     };

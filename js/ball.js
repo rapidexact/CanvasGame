@@ -28,10 +28,22 @@ function Ball() {
 function Balls(ballsCount){
     this.count = ballsCount;
     this.balls = [];
-    for (var i = 0; i < ballsCount; i++){
-        balls[i] = new Ball();
+    for (var i = 0; i < this.count; i++){
+        this.balls[i] = new Ball();
     }
-    this.get = function(pos){
-        return balls[pos];
+    this.update = function(dt) {
+        for (var key in this.balls) {
+            this.balls[key].update(dt);
+            if (isCollision(this.balls[key], basket)) {
+                basket.cth(this.balls[key]);
+                this.balls[key] = new Ball();
+            }
+        }
+    };
+    this.draw = function(){
+        for(var key in this.balls){
+            this.balls[key].draw();
+        }
     }
+
 }

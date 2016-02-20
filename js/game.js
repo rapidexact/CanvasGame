@@ -1,15 +1,14 @@
 var cnvs, context;
 var ballSpeed;
-var balls = [];
 var lastTime;
-var ballCount = 10;
 var basket;
 var isGameOver = false;
 var score;
 var buttons = {};
-var durationGame = 0;
+var durationGame;
 var isGamePaused = false;
 var rocketMoveStep = 50;
+var balls;
 
 window.onload = init;
 
@@ -71,7 +70,7 @@ function gameOver() {
 }
 
 function update(dt) {
-
+    document.getElementById('log').innerHTML = 1 + " ";
 
     if(isGamePaused){
         pauseScreen();
@@ -83,13 +82,7 @@ function update(dt) {
         return;
     }
 
-    for (var key in balls) {
-        balls[key].update(dt);
-        if(isCollision(balls[key],basket)){
-            basket.cth(balls[key]);
-            balls[key] = new Ball();
-        }
-    }
+    balls.update(dt);
     basket.update();
 
     if (durationGame / 10 > 1) {
@@ -100,9 +93,8 @@ function update(dt) {
 }
 
 function play(){
-    //alert();
     isGamePaused = false;
-    main();
+    //main();
     //startScreen();
 }
 
@@ -120,9 +112,7 @@ function render() {
         return;
     }
     context.clearRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
-    for(var key in balls){
-        balls[key].draw();
-    }
+    balls.draw();
     buttons['refresh'].draw();
     buttons['pause'].draw();
     basket.draw();
@@ -147,13 +137,12 @@ function init() {
     }
     defineParams();
     startScreen();
+    //main();
 }
 
 function defineParams() {
     context.font = "20px Arial";
     context.fillStyle = "black";
-    for (var i = 0; i < ballCount; i++)
-        balls[i] = new Ball();
     basket = new Basket();
     buttons['refresh'] = new Button(10, 10, 30, 31, 'images/refresh.png', reset);
     buttons['play'] = new Button(cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 20, 30, 31, 'images/play.png', play);
@@ -164,6 +153,7 @@ function defineParams() {
     durationGame = 0;
     isGameOver = false;
     isGamePaused = true;
+    balls = new Balls(10);
 }
 
 
@@ -216,7 +206,6 @@ function mousemove(evt) {
     mouseY = evt.pageY - cnvs.offsetTop;
     for (var key in buttons){
         if(isEntry(buttons[key],mouseX,mouseY)){
-            log.innerHTML=key;
             buttons[key].onmouseon();
         }   else{
             buttons[key].onmouseout();
