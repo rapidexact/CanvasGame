@@ -34,12 +34,12 @@ function Button(x, y, width, height, url, callback) {
         this.onclick();
     };
     this.onmouseon = function() {
-        document.getElementById('gamewindow').style.cursor = 'pointer';
+        alert(document.body.style.cursor = 'pointer');
         this.offset = 2;
         this.update();
     };
     this.onmouseout = function(){
-        document.getElementById('gamewindow').style.cursor = 'default';
+        document.body.style.cursor = 'default';
         this.offset = 0;
         this.update();
     };

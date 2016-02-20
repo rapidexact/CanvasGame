@@ -43,6 +43,11 @@ function main() {
     requestID = requestAnimFrame(main);
 }
 
+function start(){
+    defineParams();
+    startScreen();
+}
+
 function stop() {
     isGamePaused = true;
 }
@@ -52,14 +57,14 @@ function pause() {
     //isGamePaused = isGamePaused ? false : true;
 }
 function reset() {
-    init();
+    start();
 }
 
 function gameOver() {
     isGameOver = true;
     var message = "GAME OVER !"
     context.save();
-    context.fillStyle = "rgba(255, 255, 255, 1)";
+    context.fillStyle = "rgba(255, 255, 255, 0.4)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.restore();
     context.textAlign = 'center';
@@ -70,7 +75,7 @@ function gameOver() {
 }
 
 function update(dt) {
-    document.getElementById('log').innerHTML = 1 + " ";
+   // document.getElementById('log').innerHTML = 1 + " ";
 
     if(isGamePaused){
         pauseScreen();
@@ -139,14 +144,14 @@ function init() {
     main();
 }
 
-function start(){
-    defineParams();
-    startScreen();
-}
+
 
 function defineParams() {
     context.font = "20px Lasco";
     context.fillStyle = "black";
+    context.shadowColor = 'grey';
+    context.shadowBlur = 0.5;
+    //context.shadowOffsetX = 1;
     basket = new Basket();
     buttons['refresh'] = new Button(10, 10, 30, 31, 'images/refresh.png', reset);
     buttons['play'] = new Button(cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 20, 30, 31, 'images/play.png', play);
