@@ -135,13 +135,17 @@ function init() {
     if (!context) {
         return;
     }
+    start();
+    main();
+}
+
+function start(){
     defineParams();
     startScreen();
-    //main();
 }
 
 function defineParams() {
-    context.font = "20px Arial";
+    context.font = "20px Lasco";
     context.fillStyle = "black";
     basket = new Basket();
     buttons['refresh'] = new Button(10, 10, 30, 31, 'images/refresh.png', reset);

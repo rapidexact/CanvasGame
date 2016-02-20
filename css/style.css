@@ -1,7 +1,24 @@
 body {
     background-color:#fff;
-    font-family: Georgia;
+    font-family: Attentica;
 }
+
+
+@font-face {
+    font-family: "Attentica";
+    src: url('../fonts/Attentica%204F%20UltraLight.ttf');
+}
+
+@font-face {
+    font-family: "Cenotaph";
+    src: url('../fonts/Cenotaph-Titling.otf');
+}
+
+@font-face {
+    font-family: "Lasco";
+    src: url('../fonts/Lasco-Regular.ttf');
+}
+
 
 #wrapper {
     width: 900px;
