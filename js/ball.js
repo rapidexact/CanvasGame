@@ -21,6 +21,7 @@ function Ball() {
             this.y += Math.ceil(dt * ballSpeed + this.multiplier);
         } else {
             this.changeParams();
+
         }
     }
 }
@@ -30,6 +31,11 @@ function Balls(ballsCount){
     this.balls = [];
     for (var i = 0; i < this.count; i++){
         this.balls[i] = new Ball();
+        for(var key in this.balls){
+            if(this.balls[i].x >= this.balls[key].x && this.balls[i].x < this.balls[key].x + this.balls[key].width) {
+                this.balls[i].changeParams();
+            }
+        }
     }
     this.update = function(dt) {
         for (var key in this.balls) {

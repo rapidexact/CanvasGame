@@ -9,6 +9,9 @@ var durationGame;
 var isGamePaused = false;
 var rocketMoveStep = 50;
 var balls;
+var pat;
+var img;
+img = new Image();
 
 window.onload = init;
 
@@ -75,7 +78,7 @@ function gameOver() {
 }
 
 function update(dt) {
-    
+
     if(durationGame==0){
         startScreen();
         return;
@@ -119,15 +122,20 @@ function isEntry(objA,pointX,pointY){
 
 
 function render() {
-    if(isGamePaused){
-        return;
-    }
-    context.clearRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
+    //context.clearRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
+    context.save();
+//удалить паттерн для работы
+    //context.drawImage(img,0,0);
+    //pat = context.createPattern(img,"repeat");
+    //context.rect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
+    //context.fillStyle = pat;
+    //context.fill();
+    //context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
+    context.restore();
     balls.draw();
     buttons['refresh'].draw();
     buttons['pause'].draw();
     basket.draw();
-
     context.textAlign = 'end';
     context.fillText('Score : ' + score, cnvs.width - 10, 20);
     context.fillText('Ball speed : ' + ballSpeed, cnvs.width - 10, 40);
@@ -151,8 +159,8 @@ function init() {
 }
 
 
-
 function defineParams() {
+
     context.font = "20px Lasco";
     context.fillStyle = "black";
     context.shadowColor = 'grey';
@@ -169,9 +177,13 @@ function defineParams() {
     isGameOver = false;
     isGamePaused = true;
     balls = new Balls(10);
+    img.src = 'images/gameBackground.jpg';
+    img.onload = f1;
 }
 
-
+function f1(){
+    log.innerHTML = '1';
+}
 
 function startScreen() {
     var message = "Welcome !"
@@ -191,9 +203,10 @@ function startScreen() {
 
 function pauseScreen(){
     context.save();
-    context.fillStyle = "rgba(255, 255, 255, 1)";
+    context.fillStyle = "rgba(255, 255, 255, 0.1)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.fillStyle = "black";
+
     //context.shadowColor = 'grey';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
