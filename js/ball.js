@@ -3,12 +3,12 @@
  */
 function Ball() {
     this.picture = new Image();
-    this.multiplier = Math.random();
     this.changeParams = function() {
         this.x = Math.floor(Math.random() * (cnvs.clientWidth - this.width));
         this.y = Math.floor(Math.random() * -1200) - this.height;
         this.color = Math.floor(Math.random() * 5) + 1;
         this.picture.src = 'images/balls(' + this.color + ').png';
+        this.multiplier = Math.random();
         this.width = 70;//this.picture.naturalWidth;
         this.height = 70;//this.picture.naturalHeight;
     };
@@ -21,7 +21,6 @@ function Ball() {
             this.y += Math.ceil(dt * ballSpeed + this.multiplier);
         } else {
             this.changeParams();
-
         }
     }
 }
@@ -29,13 +28,14 @@ function Ball() {
 function Balls(ballsCount){
     this.count = ballsCount;
     this.balls = [];
+
     for (var i = 0; i < this.count; i++){
         this.balls[i] = new Ball();
-        for(var key in this.balls){
-            if(this.balls[i].x >= this.balls[key].x && this.balls[i].x < this.balls[key].x + this.balls[key].width) {
-                this.balls[i].changeParams();
-            }
-        }
+        //for(var key in this.balls){
+        //    if(this.balls[i].x >= this.balls[key].x && this.balls[i].x < this.balls[key].x + this.balls[key].width) {
+        //        this.balls[i].changeParams();
+        //    }
+        //}
     }
     this.update = function(dt) {
         for (var key in this.balls) {

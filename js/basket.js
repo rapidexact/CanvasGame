@@ -9,10 +9,7 @@ function Basket() {
     this.y = cnvs.clientHeight - this.height;
     this.draw = function() {
         context.save();
-        context.strokeStyle = '#EFBA48';
-        //context.shadowColor = 'black';
-        //context.shadowOffsetY = 0 ;
-        //context.shadowBlur = 2;
+        context.strokeStyle = 'black';
         context.beginPath();
         context.moveTo(this.x, this.y);
         context.lineTo(this.x + this.width, this.y);
@@ -25,11 +22,11 @@ function Basket() {
                 this.ball[i].draw();
             }
         }
-    }
+    };
     this.update = function(dx) {
         if (this.ball.length == 3)
             this.ball = [];
-    }
+    };
 
     this.moveTo = function(dx) {
         if (dx < 0) {
@@ -41,7 +38,7 @@ function Basket() {
             return;
         }
         this.x = dx;
-    }
+    };
 
     this.move = function(offset) {
         if (this.x + offset < 0) {
@@ -52,7 +49,7 @@ function Basket() {
             return;
         }
         this.x += offset;
-    }
+    };
 
     this.cth = function(ball) {
         if (this.ball.length < 3) {

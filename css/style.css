@@ -35,6 +35,7 @@ body {
 
 #log{
     float:right;
+    max-width: 100px;
 }
 
 #game {

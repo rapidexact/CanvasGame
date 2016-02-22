@@ -64,7 +64,7 @@ function reset() {
 
 function gameOver() {
     isGameOver = true;
-    var message = "GAME OVER !"
+    var message = "GAME OVER !";
     context.save();
     context.fillStyle = "rgba(254, 249, 245,0.1)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
@@ -73,7 +73,7 @@ function gameOver() {
     context.textBaseline = 'middle';
     context.fillText(message, cnvs.clientWidth / 2, cnvs.clientHeight / 2);
     buttons['refresh'].moveTo(cnvs.clientWidth / 2 - 30/ 2,cnvs.clientHeight / 2 + 20);
-    buttons['refresh'].draw();
+    //buttons['refresh'].draw();
 }
 
 function update(dt) {
@@ -109,20 +109,33 @@ function play(){
     durationGame++;
 }
 
-function isCollision(objA, objB){
-    return (objA.x + objA.width > objB.x && objA.x < objB.x + objB.width && objA.y + objA.height > objB.y) ? true : false;
+function isCollision(objB, objA){
+    if (isEntry(objA,objB.x,objB.y)){
+        return true;
+    }   else if(isEntry(objA,objB.x + objB.width,objB.y)){
+        return true;
+    }   else if(isEntry(objA,objB.x,objB.y + objB.height)){
+        return true;
+    }   else if(isEntry(objA,objB.x + objB.width,objB.y + objB.height)){
+        return true;
+    }
+return false;
 }
 
 function isEntry(objA,pointX,pointY){
-    return isCollision(objA, {x : pointX, y : pointY, width : 1, height : 1});
+    if(pointX>objA.x && pointX < objA.x + objA.width){
+        if(pointY > objA.y && pointY < objA.y + objA.height)
+        return true;
+    }else return false;
 }
 
 
 function render() {
-    context.clearRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.save();
     pat = context.createPattern(img,"repeat");
     context.fillStyle = pat;
+    context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
+    context.fillStyle = "rgba(255,255,255,0.2)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.restore();
     balls.draw();
@@ -131,9 +144,6 @@ function render() {
     basket.draw();
     context.save();
     context.fillStyle = "black";
-    context.shadowColor = 'rgb(255,255,255)';
-    context.shadowBlur =5;
-    context.shadowOffsetY=1;
     context.textAlign = 'end';
     context.fillText('Score : ' + score, cnvs.width - 10, 20);
     context.fillText('Ball speed : ' + ballSpeed, cnvs.width - 10, 40);
@@ -159,16 +169,9 @@ function init() {
 
 
 function defineParams() {
-
     context.font = "20px Lasco";
-    context.fillStyle = "black";
-    context.shadowColor = 'grey';
-    context.shadowBlur = 0.5;
-    //context.shadowOffsetX = 1;
     basket = new Basket();
-    buttons['refresh'] = new Button(10, 10, 30, 31, 'images/refresh.png', reset);
-    buttons['play'] = new Button(cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 20, 30, 31, 'images/play.png', play);
-    buttons['pause'] = new Button(50, 10, 30, 31, 'images/pause.png', pause);
+    buttons = new Buttons();
     lastTime = Date.now();
     score = 0;
     ballSpeed = 100;
@@ -179,15 +182,15 @@ function defineParams() {
     img.src = 'images/gameBackground.jpg';
 }
 
-function f1(){
-    log.innerHTML = '1';
+function log(str){
+    log.innerHTML += str + " <br>";
 }
 
 function startScreen() {
-    var message = "Welcome !"
+    var message = "Welcome !";
     var instructions = "For moving rocket use mouse of keyboard arrows";
     context.save();
-    context.fillStyle = "rgba(254, 249, 245,0.1)";
+    context.fillStyle = "rgba(254, 249, 245,0.5)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.restore();
     context.textAlign = 'center';
@@ -204,7 +207,6 @@ function pauseScreen(){
     context.fillStyle = "rgba(254, 249, 245,0.1)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.fillStyle = "black";
-    //context.shadowColor = 'grey';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText("Paused", cnvs.clientWidth / 2, cnvs.clientHeight / 2);

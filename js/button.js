@@ -16,6 +16,7 @@ function Button(x, y, width, height, url, callback) {
     this.moveTo = function(x,y){
         this.initPosX = x;
         this.initPosY = y;
+        this.update();
     }
 
     this.draw = function() {
@@ -45,4 +46,10 @@ function Button(x, y, width, height, url, callback) {
     };
 
     this.onclick = callback;
+}
+
+function Buttons(){
+    this.refresh = new Button(10, 10, 30, 31, 'images/refresh.png', reset);
+    this.play = new Button(cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 20, 30, 31, 'images/play.png', play);
+    this.pause = new Button(50, 10, 30, 31, 'images/pause.png', pause);
 }
