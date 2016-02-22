@@ -57,7 +57,6 @@ function stop() {
 
 function pause() {
     isGamePaused = true;
-    //isGamePaused = isGamePaused ? false : true;
 }
 function reset() {
     start();
@@ -67,7 +66,7 @@ function gameOver() {
     isGameOver = true;
     var message = "GAME OVER !"
     context.save();
-    context.fillStyle = "rgba(255, 255, 255, 0.4)";
+    context.fillStyle = "rgba(254, 249, 245,0.1)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.restore();
     context.textAlign = 'center';
@@ -108,8 +107,6 @@ function update(dt) {
 function play(){
     isGamePaused = false;
     durationGame++;
-    //main();
-    //startScreen();
 }
 
 function isCollision(objA, objB){
@@ -122,23 +119,25 @@ function isEntry(objA,pointX,pointY){
 
 
 function render() {
-    //context.clearRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
+    context.clearRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.save();
-//удалить паттерн для работы
-    //context.drawImage(img,0,0);
-    //pat = context.createPattern(img,"repeat");
-    //context.rect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
-    //context.fillStyle = pat;
-    //context.fill();
-    //context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
+    pat = context.createPattern(img,"repeat");
+    context.fillStyle = pat;
+    context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.restore();
     balls.draw();
     buttons['refresh'].draw();
     buttons['pause'].draw();
     basket.draw();
+    context.save();
+    context.fillStyle = "black";
+    context.shadowColor = 'rgb(255,255,255)';
+    context.shadowBlur =5;
+    context.shadowOffsetY=1;
     context.textAlign = 'end';
     context.fillText('Score : ' + score, cnvs.width - 10, 20);
     context.fillText('Ball speed : ' + ballSpeed, cnvs.width - 10, 40);
+    context.restore();
 }
 
 function init() {
@@ -178,7 +177,6 @@ function defineParams() {
     isGamePaused = true;
     balls = new Balls(10);
     img.src = 'images/gameBackground.jpg';
-    img.onload = f1;
 }
 
 function f1(){
@@ -189,7 +187,7 @@ function startScreen() {
     var message = "Welcome !"
     var instructions = "For moving rocket use mouse of keyboard arrows";
     context.save();
-    context.fillStyle = "rgba(255, 255, 255, 1)";
+    context.fillStyle = "rgba(254, 249, 245,0.1)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.restore();
     context.textAlign = 'center';
@@ -203,10 +201,9 @@ function startScreen() {
 
 function pauseScreen(){
     context.save();
-    context.fillStyle = "rgba(255, 255, 255, 0.1)";
+    context.fillStyle = "rgba(254, 249, 245,0.1)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.fillStyle = "black";
-
     //context.shadowColor = 'grey';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
@@ -214,7 +211,6 @@ function pauseScreen(){
     context.restore();
     buttons['play'].moveTo(cnvs.clientWidth / 2 - 15,  cnvs.clientHeight / 2 + 20);
     buttons['play'].draw();
-//    startScreen();
 }
 
 var mouseX;
