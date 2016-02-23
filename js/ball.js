@@ -3,23 +3,26 @@
  */
 function Ball() {
     this.picture = new Image();
+    //this.isDie = false;
     this.changeParams = function() {
-        this.x = Math.floor(Math.random() * (cnvs.clientWidth - this.width));
-        this.y = Math.floor(Math.random() * -1200) - this.height;
+        this.x = Math.floor(Math.random() * Math.random() / Math.random() * (cnvs.clientWidth - this.width));
+        this.y = Math.floor(Math.random() * Math.random() / Math.random() * -2000) - this.height;
         this.color = Math.floor(Math.random() * 5) + 1;
         this.picture.src = 'images/balls(' + this.color + ').png';
-        this.multiplier = Math.random();
+        this.multiplier = Math.random();// * Math.random() / Math.random();
         this.width = 70;//this.picture.naturalWidth;
         this.height = 70;//this.picture.naturalHeight;
+        //this.isDie = false;
     };
     this.draw = function() {
         context.drawImage(this.picture, this.x, this.y,this.width,this.height);
     };
 
     this.update = function(dt) {
-        if (this.y <= cnvs.height) {
+        if (this.y < cnvs.height-10) {
             this.y += Math.ceil(dt * ballSpeed + this.multiplier);
         } else {
+            //this.isDie = true;
             this.changeParams();
         }
     }
@@ -31,11 +34,6 @@ function Balls(ballsCount){
 
     for (var i = 0; i < this.count; i++){
         this.balls[i] = new Ball();
-        //for(var key in this.balls){
-        //    if(this.balls[i].x >= this.balls[key].x && this.balls[i].x < this.balls[key].x + this.balls[key].width) {
-        //        this.balls[i].changeParams();
-        //    }
-        //}
     }
     this.update = function(dt) {
         for (var key in this.balls) {

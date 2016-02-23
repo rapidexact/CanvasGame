@@ -12,6 +12,7 @@ var balls;
 var pat;
 var img;
 img = new Image();
+var mission = {};
 
 window.onload = init;
 
@@ -73,7 +74,6 @@ function gameOver() {
     context.textBaseline = 'middle';
     context.fillText(message, cnvs.clientWidth / 2, cnvs.clientHeight / 2);
     buttons['refresh'].moveTo(cnvs.clientWidth / 2 - 30/ 2,cnvs.clientHeight / 2 + 20);
-    //buttons['refresh'].draw();
 }
 
 function update(dt) {
@@ -93,7 +93,10 @@ function update(dt) {
         gameOver();
         return;
     }
-
+    mission.update();
+    if(mission.isCompleted){
+        mission = new Mission();
+    }
     balls.update(dt);
     basket.update();
 
@@ -110,6 +113,7 @@ function play(){
 }
 
 function isCollision(objB, objA){
+
     if (isEntry(objA,objB.x,objB.y)){
         return true;
     }   else if(isEntry(objA,objB.x + objB.width,objB.y)){
@@ -128,7 +132,33 @@ function isEntry(objA,pointX,pointY){
         return true;
     }else return false;
 }
-
+function Mission(){
+    this.ball = new Ball();
+    this.ball.changeParams();
+    this.ball.x = cnvs.clientWidth - this.ball.width - 20;
+    this.ball.y = cnvs.clientHeight - 400;
+    this.count = 1;
+    this.isCompleted = false;
+    this.update = function(){
+        if(basket.ball.length!=0){
+            if (basket.ball[basket.ball.length-1].color != this.ball.color){
+                isGameOver = true;
+            }
+            else if (basket.ball.length == this.count) {
+                basket.ball = [];
+                score+=this.count;
+                this.isCompleted = true;
+            }
+        }
+    };
+    this.draw = function(){
+        context.save();
+        context.textAlign = 'start';
+        context.fillText("Target", this.ball.x, this.ball.y - 20);
+        context.restore();
+        this.ball.draw();
+    }
+}
 
 function render() {
     context.save();
@@ -141,6 +171,7 @@ function render() {
     balls.draw();
     buttons['refresh'].draw();
     buttons['pause'].draw();
+    mission.draw();
     basket.draw();
     context.save();
     context.fillStyle = "black";
@@ -168,6 +199,9 @@ function init() {
 }
 
 
+
+
+
 function defineParams() {
     context.font = "20px Lasco";
     basket = new Basket();
@@ -178,12 +212,16 @@ function defineParams() {
     durationGame = 0;
     isGameOver = false;
     isGamePaused = true;
-    balls = new Balls(10);
+    balls = new Balls(15);
     img.src = 'images/gameBackground.jpg';
+    mission = new Mission();
 }
 
+
+
+
 function log(str){
-    log.innerHTML += str + " <br>";
+    document.getElementById('log').innerHTML = str + " <br>";
 }
 
 function startScreen() {
@@ -254,6 +292,8 @@ function keydown(evt) {
     if (keyCode == 39)
         basket.move(rocketMoveStep);
 }
+
+
 
 
 /**
