@@ -3,6 +3,8 @@
  */
 
 function Button(x, y, width, height, url, callback) {
+    var clickSound = new Audio();
+    clickSound.src = 'sounds/click.mp3';
     this.width = width;
     this.height = height;
     this.initPosX = x;
@@ -17,7 +19,7 @@ function Button(x, y, width, height, url, callback) {
         this.initPosX = x;
         this.initPosY = y;
         this.update();
-    }
+    };
 
     this.draw = function() {
         context.drawImage(this.picture, this.x, this.y, this.width, this.height);
@@ -32,6 +34,7 @@ function Button(x, y, width, height, url, callback) {
     };
 
     this.click = function() {
+        clickSound.play();
         this.onclick();
     };
     this.onmouseon = function() {

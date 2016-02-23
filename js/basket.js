@@ -52,16 +52,7 @@ function Basket() {
     };
 
     this.cth = function(ball) {
-        if (this.ball.length <= 33) {
             this.ball[this.ball.length] = new Ball();
             this.ball[this.ball.length - 1] = ball;
-            if (this.ball[this.ball.length - 1].color == this.ball[0].color) {
-                //score += 1;
-            } else {
-                //gameOver();
-            }
-        } else {
-            //this.ball = null;
-        }
     }
 }

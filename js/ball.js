@@ -3,16 +3,14 @@
  */
 function Ball() {
     this.picture = new Image();
-    //this.isDie = false;
     this.changeParams = function() {
+        this.width = 70;//this.picture.naturalWidth;
+        this.height = 70;//this.picture.naturalHeight;
         this.x = Math.floor(Math.random() * Math.random() / Math.random() * (cnvs.clientWidth - this.width));
-        this.y = Math.floor(Math.random() * Math.random() / Math.random() * -2000) - this.height;
+        this.y = Math.floor((Math.random() * Math.random() / Math.random()) * - 2000) - this.height;
         this.color = Math.floor(Math.random() * 5) + 1;
         this.picture.src = 'images/balls(' + this.color + ').png';
         this.multiplier = Math.random();// * Math.random() / Math.random();
-        this.width = 70;//this.picture.naturalWidth;
-        this.height = 70;//this.picture.naturalHeight;
-        //this.isDie = false;
     };
     this.draw = function() {
         context.drawImage(this.picture, this.x, this.y,this.width,this.height);
@@ -22,7 +20,6 @@ function Ball() {
         if (this.y < cnvs.height-10) {
             this.y += Math.ceil(dt * ballSpeed + this.multiplier);
         } else {
-            //this.isDie = true;
             this.changeParams();
         }
     }
@@ -31,7 +28,6 @@ function Ball() {
 function Balls(ballsCount){
     this.count = ballsCount;
     this.balls = [];
-
     for (var i = 0; i < this.count; i++){
         this.balls[i] = new Ball();
     }

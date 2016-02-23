@@ -1,5 +1,5 @@
 body {
-    background-color:#fff;
+    background-color:#FFFBF6;
     font-family: Attentica;
 }
 
@@ -40,12 +40,6 @@ body {
 
 #game {
     align-content: center;
-    //border: 1px solid black;
-}
-
-#tiag {
-    text-align: center;
-    color: #fff;
 }
 
 nav {

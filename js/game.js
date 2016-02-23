@@ -1,3 +1,11 @@
+/*
+TODO
+проверка на вхождение двух обьектов
+сделать следующую цель
+плавность анимации
+предзагрузка
+*/
+
 var cnvs, context;
 var ballSpeed;
 var lastTime;
@@ -15,7 +23,6 @@ img = new Image();
 var mission = {};
 
 window.onload = init;
-
 
 var requestAnimFrame = (function() {
     return window.requestAnimationFrame ||
@@ -83,16 +90,16 @@ function update(dt) {
         return;
     }
 
+    if(isGameOver){
+        gameOver();
+        return;
+    }
+
     if(isGamePaused){
         pauseScreen();
         return;
     }
 
-
-    if(isGameOver){
-        gameOver();
-        return;
-    }
     mission.update();
     if(mission.isCompleted){
         mission = new Mission();
@@ -137,7 +144,7 @@ function Mission(){
     this.ball.changeParams();
     this.ball.x = cnvs.clientWidth - this.ball.width - 20;
     this.ball.y = cnvs.clientHeight - 400;
-    this.count = 1;
+    this.count = Math.ceil(Math.random() * 10 / 3);
     this.isCompleted = false;
     this.update = function(){
         if(basket.ball.length!=0){
@@ -153,8 +160,8 @@ function Mission(){
     };
     this.draw = function(){
         context.save();
-        context.textAlign = 'start';
-        context.fillText("Target", this.ball.x, this.ball.y - 20);
+        context.textAlign = 'end';
+        context.fillText("Target x"+this.count, cnvs.clientWidth - 10, this.ball.y - 20);
         context.restore();
         this.ball.draw();
     }
@@ -194,16 +201,14 @@ function init() {
     if (!context) {
         return;
     }
+
+    context.font = "20px Lasco";
+    img.src = 'images/gameBackground.jpg';
     start();
     main();
 }
 
-
-
-
-
 function defineParams() {
-    context.font = "20px Lasco";
     basket = new Basket();
     buttons = new Buttons();
     lastTime = Date.now();
@@ -213,15 +218,11 @@ function defineParams() {
     isGameOver = false;
     isGamePaused = true;
     balls = new Balls(15);
-    img.src = 'images/gameBackground.jpg';
     mission = new Mission();
 }
 
-
-
-
 function log(str){
-    document.getElementById('log').innerHTML = str + " <br>";
+    document.getElementById('log').innerHTML += str + " ";
 }
 
 function startScreen() {
@@ -262,7 +263,7 @@ function click(evt) {
     for (var key in buttons){
         if (isEntry(buttons[key],mouseX,mouseY)){
             buttons[key].click();
-            return;
+            break;
         }
     }
 }
@@ -273,6 +274,7 @@ function mousemove(evt) {
     for (var key in buttons){
         if(isEntry(buttons[key],mouseX,mouseY)){
             buttons[key].onmouseon();
+            break;
         }   else{
             buttons[key].onmouseout();
         }
@@ -292,8 +294,6 @@ function keydown(evt) {
     if (keyCode == 39)
         basket.move(rocketMoveStep);
 }
-
-
 
 
 /**
