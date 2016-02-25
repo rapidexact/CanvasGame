@@ -199,7 +199,12 @@ function render() {
 
 function loadingScreen(){
     context.save();
-    context.fillText('Loading...',100,100);
+    context.fillStyle = "rgba(254, 249, 245,1)";
+    context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
+    context.fillStyle = "black";
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText("Loading...", cnvs.clientWidth / 2, cnvs.clientHeight / 2);
     context.restore();
 }
 
@@ -260,8 +265,8 @@ function log(str){
 
 function startScreen() {
     if(isReady!=2){
-        //log(""+isReady+"");
         loadingScreen();
+        return;
     }
     var message = "Welcome !";
     var instructions = "For moving rocket use mouse or keyboard arrows";
