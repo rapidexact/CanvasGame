@@ -257,6 +257,7 @@ function defineParams() {
     mission = new Mission();
     backgroundMusic.src = 'sounds/bensound-littleidea.mp3';
     backgroundMusic.loop = true;
+    backgroundMusic.volume = 0.1;
 }
 
 function log(str){
