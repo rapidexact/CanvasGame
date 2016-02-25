@@ -1,12 +1,7 @@
 body {
     background-color:#FFFBF6;
-    font-family: Attentica;
-}
-
-
-@font-face {
-    font-family: "Attentica";
-    src: url('../fonts/Attentica%204F%20UltraLight.ttf');
+    font-family: Cenotaph;
+    font-size: 18px;
 }
 
 @font-face {
@@ -23,29 +18,18 @@ body {
 #wrapper {
     width: 900px;
     margin: 0 auto;
+    padding: 0px;
+}
+
+#game{
+    width: 800px;
+    margin: 0px;
+    padding: 0px;
 }
 
 #gamewindow {
     background-color:#fff;
     border: 3px solid #b89778;
     border-radius: 10px;
-    align-self: flex-end;
-    position: relative;
-}
-
-#log{
-    float:right;
-    max-width: 100px;
-}
-
-#game {
-    align-content: center;
-}
-
-nav {
-    float: left;
-}
-
-nav a {
-    text-decoration: none;
+    margin: 0;
 }

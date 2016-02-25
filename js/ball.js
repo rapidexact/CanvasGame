@@ -6,7 +6,7 @@ function Ball() {
     this.changeParams = function() {
         this.width = 70;//this.picture.naturalWidth;
         this.height = 70;//this.picture.naturalHeight;
-        this.x = Math.floor(Math.random() * Math.random() / Math.random() * (cnvs.clientWidth - this.width));
+        this.x = Math.floor((Math.random() * Math.random() / Math.random())%1 * (cnvs.clientWidth - this.width));
         this.y = Math.floor((Math.random() * Math.random() / Math.random()) * - 2000) - this.height;
         this.color = Math.floor(Math.random() * 5) + 1;
         this.picture.src = 'images/balls(' + this.color + ').png';

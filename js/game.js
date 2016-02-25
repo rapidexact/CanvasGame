@@ -4,6 +4,7 @@ TODO
 сделать следующую цель
 плавность анимации
 предзагрузка
+сделать ход каретки больше
 */
 
 var cnvs, context;
@@ -21,6 +22,10 @@ var pat;
 var img;
 img = new Image();
 var mission = {};
+var backgroundMusic = new Audio();
+var isReady = 0;
+var imgsToPreload = [];
+var soundsToPreload = [];
 
 window.onload = init;
 
@@ -61,16 +66,19 @@ function start(){
 
 function stop() {
     isGamePaused = true;
+    backgroundMusic.pause();
 }
 
 function pause() {
     isGamePaused = true;
+    backgroundMusic.pause();
 }
 function reset() {
     start();
 }
 
 function gameOver() {
+    backgroundMusic.pause();
     isGameOver = true;
     var message = "GAME OVER !";
     context.save();
@@ -117,6 +125,7 @@ function update(dt) {
 function play(){
     isGamePaused = false;
     durationGame++;
+    backgroundMusic.play();
 }
 
 function isCollision(objB, objA){
@@ -172,7 +181,7 @@ function render() {
     pat = context.createPattern(img,"repeat");
     context.fillStyle = pat;
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
-    context.fillStyle = "rgba(255,255,255,0.2)";
+    context.fillStyle = "rgba(255,255,255,0.7)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.restore();
     balls.draw();
@@ -188,7 +197,28 @@ function render() {
     context.restore();
 }
 
+function loadingScreen(){
+    context.save();
+    context.fillText('Loading...',100,100);
+    context.restore();
+}
+
 function init() {
+    imgsToPreload.push('images/gameBackground.jpg',
+        'images/balls(1).png',
+        'images/balls(2).png',
+        'images/balls(3).png',
+        'images/balls(4).png',
+        'images/balls(5).png',
+        'images/pause.png',
+        'images/play.png',
+        'images/power.png',
+        'images/refresh.png'
+    );
+    soundsToPreload.push('sounds/bensound-littleidea.mp3');
+
+    preloadImages(imgsToPreload, function(){isReady++;});
+    preloadSounds(soundsToPreload, function(){isReady++;})
     window.document.addEventListener('click', click, true);
     window.onmousemove = mousemove;
     window.onkeydown = keydown;
@@ -204,6 +234,7 @@ function init() {
 
     context.font = "20px Lasco";
     img.src = 'images/gameBackground.jpg';
+    loadingScreen();
     start();
     main();
 }
@@ -219,15 +250,21 @@ function defineParams() {
     isGamePaused = true;
     balls = new Balls(15);
     mission = new Mission();
+    backgroundMusic.src = 'sounds/bensound-littleidea.mp3';
+    backgroundMusic.loop = true;
 }
 
 function log(str){
-    document.getElementById('log').innerHTML += str + " ";
+    document.getElementById('about').innerHTML = str + " ";
 }
 
 function startScreen() {
+    if(isReady!=2){
+        //log(""+isReady+"");
+        loadingScreen();
+    }
     var message = "Welcome !";
-    var instructions = "For moving rocket use mouse of keyboard arrows";
+    var instructions = "For moving rocket use mouse or keyboard arrows";
     context.save();
     context.fillStyle = "rgba(254, 249, 245,0.5)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
@@ -288,7 +325,7 @@ function keydown(evt) {
     if(isGamePaused){
         return;
     }
-    keyCode = evt.keyCode;
+    var keyCode = evt.keyCode;
     if (keyCode == 37)
         basket.move(-rocketMoveStep);
     if (keyCode == 39)
