@@ -3,7 +3,7 @@
  */
 function Basket() {
     this.ball = [];
-    this.width = 120;
+    this.width = 70;
     this.height = 10;
     this.x = ((cnvs.clientWidth) / 2) - (this.width / 2);
     this.y = cnvs.clientHeight - this.height;

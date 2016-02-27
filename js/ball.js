@@ -4,14 +4,16 @@
 function Ball() {
     this.picture = new Image();
     this.changeParams = function() {
-        this.width = 70;//this.picture.naturalWidth;
         this.height = 70;//this.picture.naturalHeight;
+        this.width = 70;//this.picture.naturalWidth;
         this.x = Math.floor((Math.random() * Math.random() / Math.random())%1 * (cnvs.clientWidth - this.width));
-        this.y = Math.floor((Math.random() * Math.random() / Math.random()) * - 2000) - this.height;
+        this.y = Math.floor((Math.random() * Math.random() / Math.random())%1 * - 4000) - this.height;
         this.color = Math.floor(Math.random() * 5) + 1;
         this.picture.src = 'images/balls(' + this.color + ').png';
         this.multiplier = Math.random();// * Math.random() / Math.random();
+        this.isDied = false;
     };
+    this.changeParams();
     this.draw = function() {
         context.drawImage(this.picture, this.x, this.y,this.width,this.height);
     };
@@ -20,23 +22,37 @@ function Ball() {
         if (this.y < cnvs.height-10) {
             this.y += Math.ceil(dt * ballSpeed + this.multiplier);
         } else {
-            this.changeParams();
+            this.isDied = true;
         }
     }
 }
 
-function Balls(ballsCount){
+function BallManager(ballsCount){
     this.count = ballsCount;
     this.balls = [];
+    this.addNew = function(){
+        this.balls.push(new Ball());
+        for(i=0;i<this.balls.length;i++){
+            for(var key in this.balls){
+                if(isCollision(this.balls[this.balls.length-1],this.balls[key]))   {
+                    this.balls[this.balls.length-1].changeParams();
+                    i=0;
+                }
+            }}
+    };
     for (var i = 0; i < this.count; i++){
-        this.balls[i] = new Ball();
+        this.addNew();
     }
     this.update = function(dt) {
         for (var key in this.balls) {
             this.balls[key].update(dt);
+            if(this.balls[key].isDied == true){
+                this.balls.splice(key,1);
+                this.addNew();
+            }
             if (isCollision(this.balls[key], basket)) {
                 basket.cth(this.balls[key]);
-                this.balls[key] = new Ball();
+                this.balls[key].isDied = true;
             }
         }
     };

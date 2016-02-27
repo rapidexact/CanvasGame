@@ -2,9 +2,9 @@
 TODO
 проверка на вхождение двух обьектов
 сделать следующую цель
-плавность анимации
-предзагрузка
 сделать ход каретки больше
+разобраться с кнопками
+разобраться с экранами
 */
 
 var cnvs, context;
@@ -237,7 +237,7 @@ function init() {
         return;
     }
 
-    context.font = "20px Lasco";
+    context.font = "26px FReminderPro-Regular";
     img.src = 'images/gameBackground.jpg';
     loadingScreen();
     start();
@@ -253,7 +253,7 @@ function defineParams() {
     durationGame = 0;
     isGameOver = false;
     isGamePaused = true;
-    balls = new Balls(15);
+    balls = new BallManager(15);
     mission = new Mission();
     backgroundMusic.src = 'sounds/bensound-littleidea.mp3';
     backgroundMusic.loop = true;
@@ -261,7 +261,7 @@ function defineParams() {
 }
 
 function log(str){
-    document.getElementById('about').innerHTML = str + " ";
+    document.getElementById('log').innerHTML = str + " ";
 }
 
 function startScreen() {
@@ -328,14 +328,23 @@ function mousemove(evt) {
 }
 
 function keydown(evt) {
-    if(isGamePaused){
-        return;
-    }
     var keyCode = evt.keyCode;
+
+    if(!isGamePaused){
     if (keyCode == 37)
         basket.move(-rocketMoveStep);
     if (keyCode == 39)
         basket.move(rocketMoveStep);
+}
+
+    if(keyCode == 32 || keyCode == 27){
+        if(isGamePaused) {
+            play();
+        }
+        else {
+            pause();
+            }
+    }
 }
 
 

@@ -5,6 +5,7 @@
 function Button(x, y, width, height, url, callback) {
     var clickSound = new Audio();
     clickSound.src = 'sounds/click.mp3';
+    clickSound.volume = 0.1;
     this.width = width;
     this.height = height;
     this.initPosX = x;
