@@ -24,8 +24,15 @@ function Basket() {
         }
     };
     this.update = function(dx) {
-
-    };
+        if(dx>cnvs.clientWidth - this.width){
+            dx = cnvs.clientWidth - this.width/2;
+        }else if(dx < this.width/2){
+                dx = this.width/2;
+            }
+            dx = dx-(this.width/2);
+        this.x = smoothMove(this.x,dx);
+            // this.x = (this.x+((dx-this.x)*0.1));
+        };
 
     this.moveTo = function(dx) {
         dx = dx - this.width/2;

@@ -20,7 +20,8 @@ function Ball() {
 
     this.update = function(dt) {
         if (this.y < cnvs.height-10) {
-            this.y += Math.ceil(dt * ballSpeed + this.multiplier);
+            this.y = smoothMove(this.y, this.y+Math.ceil(dt * ballSpeed * 10 + this.multiplier));
+            // this.y += Math.ceil(dt * ballSpeed + this.multiplier);
         } else {
             this.isDied = true;
         }

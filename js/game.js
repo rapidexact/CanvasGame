@@ -2,9 +2,8 @@
 TODO
 проверка на вхождение двух обьектов
 сделать следующую цель
-сделать ход каретки больше
 разобраться с кнопками
-разобраться с экранами
+Подложки для кнопок
 */
 
 var cnvs, context;
@@ -26,6 +25,8 @@ var backgroundMusic = new Audio();
 var isReady = 0;
 var imgsToPreload = [];
 var soundsToPreload = [];
+var mouseX, mouseY;
+var isMouseControl = true;
 
 window.onload = init;
 
@@ -78,7 +79,10 @@ function reset() {
 }
 
 function gameOver() {
+    // buttons['pause'] = null;
+    // buttons = NULL;
     backgroundMusic.pause();
+    isGamePaused =true;
     isGameOver = true;
     var message = "GAME OVER !";
     context.save();
@@ -113,8 +117,9 @@ function update(dt) {
         mission = new Mission();
     }
     balls.update(dt);
-    basket.update();
-
+    if(isMouseControl) {
+        basket.update(mouseX);
+    }
     if (durationGame / 10 > 1) {
         durationGame = 0;
         ballSpeed += 10;
@@ -297,8 +302,6 @@ function pauseScreen(){
     buttons['play'].draw();
 }
 
-var mouseX;
-var mouseY;
 
 function click(evt) {
     mouseX = evt.pageX - cnvs.offsetLeft;
@@ -312,6 +315,7 @@ function click(evt) {
 }
 
 function mousemove(evt) {
+    isMouseControl = true;
     mouseX = evt.pageX - cnvs.offsetLeft;
     mouseY = evt.pageY - cnvs.offsetTop;
     for (var key in buttons){
@@ -323,19 +327,21 @@ function mousemove(evt) {
         }
     }
     if(!isGamePaused) {
-        basket.moveTo(mouseX);
+        basket.update(mouseX);
     }
 }
 
 function keydown(evt) {
     var keyCode = evt.keyCode;
 
-    if(!isGamePaused){
-    if (keyCode == 37)
+    isMouseControl = false;
+    // if(isGamePaused){return;}
+        if (keyCode == 37){
         basket.move(-rocketMoveStep);
-    if (keyCode == 39)
-        basket.move(rocketMoveStep);
-}
+    }
+    if (keyCode == 39){
+        basket.move(rocketMoveStep);}
+
 
     if(keyCode == 32 || keyCode == 27){
         if(isGamePaused) {
@@ -345,35 +351,4 @@ function keydown(evt) {
             pause();
             }
     }
-}
-
-
-/**
- * аналог PHP-шной
- * @param {Array/HTMLElement/Object} taV
- */
-function print_r(taV)
-{
-    return getProps(taV);
-}
-
-/**
- * возвращает список атрибутов объекта и значения
- * @param {Element/Object} toObj - ссылка на объект
- * @param {String} tcSplit - строка разделитель строк
- * @return {String} - строку со списком атрибутов объекта
- * и значениями атрибутов
- */
-function getProps(toObj, tcSplit)
-{
-    if (!tcSplit) tcSplit = '\n';
-    var lcRet = '';
-    var lcTab = '    ';
-
-    for (var i in toObj) // обращение к свойствам объекта по индексу
-        lcRet += lcTab + i + " : " + toObj[i] + tcSplit;
-
-    lcRet = '{' + tcSplit + lcRet + '}';
-
-    return lcRet;
 }
