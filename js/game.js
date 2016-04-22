@@ -68,6 +68,7 @@ function pause() {
     isGamePaused = true;
     sounds.backgroundMusic.pause();
 }
+
 function reset() {
     start();
 }
