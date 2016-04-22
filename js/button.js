@@ -4,7 +4,7 @@
 var BUTTON_PLAY = new Button(100,100, 30, 34, 'images/play.png', play);
 var BUTTON_PAUSE = new Button(50, 10, 30, 31, 'images/pause.png', pause);
 var BUTTON_RESET = new Button(10, 10, 30, 31, 'images/refresh.png', reset);
-var BUTTON_MUTEUNMUTE = new Button(10, 10, 30, 31, 'images/refresh.png', muteUnmute);
+var BUTTON_MUTEUNMUTE = new Button(10, 10, 40, 39, 'images/ic_volume_off_black_48dp.png', muteUnmute);
 
 function Button(x, y, width, height, url, callback) {
     var clickSound = new Audio();

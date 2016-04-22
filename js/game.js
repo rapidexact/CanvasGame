@@ -2,8 +2,6 @@
 TODO
 проверка на вхождение двух обьектов
 сделать следующую цель
-разобраться с кнопками
-Подложки для кнопок
 */
 
 var cnvs, context;
@@ -17,17 +15,17 @@ var durationGame;
 var isGamePaused = false;
 var rocketMoveStep = 50;
 var balls;
-var pat;
-var backgroundImg;
-backgroundImg = new Image();
+var bgPattern;
+var bgImg;
+bgImg = new Image();
 var mission = {};
 var sounds = {};
-var isReady = 0;
+var waitingForReady = 2;
 var imgsToPreload = [];
 var soundsToPreload = [];
 var mouseX, mouseY;
 var isMouseControl = true;
-var backgroundMusic = new Audio();
+sounds.backgroundMusic = new Audio();
 window.onload = init;
 
 var requestAnimFrame = (function() {
@@ -66,21 +64,17 @@ function start(){
     startScreen();
 }
 
-function stop() {
-    isGamePaused = true;
-    backgroundMusic.pause();
-}
-
 function pause() {
     isGamePaused = true;
-    backgroundMusic.pause();
+    sounds.backgroundMusic.pause();
 }
 function reset() {
     start();
 }
 
 function gameOver() {
-    backgroundMusic.pause();
+    // muteUnmute();
+    sounds.backgroundMusic.pause();
     isGamePaused =true;
     isGameOver = true;
     var message = "GAME OVER !";
@@ -91,7 +85,6 @@ function gameOver() {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText(message, cnvs.clientWidth / 2, cnvs.clientHeight / 2);
-    // buttons = null;
     buttons = {};
     buttons.reset = BUTTON_RESET;
     buttons.reset.setPos(cnvs.clientWidth / 2 - 30/ 2,cnvs.clientHeight / 2 + 20);
@@ -133,7 +126,7 @@ function update(dt) {
 function play(){
     isGamePaused = false;
     durationGame++;
-    backgroundMusic.play();
+    sounds.backgroundMusic.play();
     buttons = {};
     buttons.reset = BUTTON_RESET;
     buttons.reset.setPos(10, 10);
@@ -193,8 +186,8 @@ function Mission(){
 
 function render() {
     context.save();
-    pat = context.createPattern(backgroundImg,"repeat");
-    context.fillStyle = pat;
+    bgPattern = context.createPattern(bgImg,"repeat");
+    context.fillStyle = bgPattern;
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.fillStyle = "rgba(255,255,255,0.7)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
@@ -238,12 +231,12 @@ function init() {
     );
     soundsToPreload.push('sounds/bensound-littleidea.mp3');
 
-    preloadImages(imgsToPreload, function(){isReady++;});
-    preloadSounds(soundsToPreload, function(){isReady++;})
+    preloadImages(imgsToPreload, function(){waitingForReady--;});
+    preloadSounds(soundsToPreload, function(){waitingForReady--;})
     window.document.addEventListener('click', click, true);
     window.onmousemove = mousemove;
     window.onkeydown = keydown;
-    window.onblur = stop;
+    window.onblur = pause;
     cnvs = document.getElementById('gamewindow');
     if (!cnvs || !cnvs.getContext) {
         return;
@@ -254,7 +247,7 @@ function init() {
     }
 
     context.font = "26px FReminderPro-Regular";
-    backgroundImg.src = 'images/gameBackground.jpg';
+    bgImg.src = 'images/gameBackground.jpg';
     loadingScreen();
     start();
     main();
@@ -269,11 +262,11 @@ function defineParams() {
     durationGame = 0;
     isGameOver = false;
     isGamePaused = true;
-    balls = new BallManager(15);
+    balls = new BallManager(20);
     mission = new Mission();
-    backgroundMusic.src = 'sounds/bensound-littleidea.mp3';
-    backgroundMusic.loop = true;
-    backgroundMusic.volume = 0.1;
+    sounds.backgroundMusic.src = 'sounds/bensound-littleidea.mp3';
+    sounds.backgroundMusic.loop = true;
+    sounds.backgroundMusic.volume = 0.1;
 }
 
 function log(str){
@@ -281,7 +274,7 @@ function log(str){
 }
 
 function startScreen() {
-    if(isReady!=2){
+    if(waitingForReady==0){
         loadingScreen();
         return;
     }
@@ -369,6 +362,6 @@ function keydown(evt) {
 
 function muteUnmute() {
     for(var key in sounds){
-        sounds[key].play = false;
+        sounds[key].muted = !sounds[key].muted;
     }
 }
