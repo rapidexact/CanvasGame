@@ -1,6 +1,10 @@
 /**
  * Created by alexander on 18.02.16.
  */
+var BUTTON_PLAY = new Button(100,100, 30, 34, 'images/play.png', play);
+var BUTTON_PAUSE = new Button(50, 10, 30, 31, 'images/pause.png', pause);
+var BUTTON_RESET = new Button(10, 10, 30, 31, 'images/refresh.png', reset);
+var BUTTON_MUTEUNMUTE = new Button(10, 10, 30, 31, 'images/refresh.png', muteUnmute);
 
 function Button(x, y, width, height, url, callback) {
     var clickSound = new Audio();
@@ -16,7 +20,7 @@ function Button(x, y, width, height, url, callback) {
     this.y = this.initPosY + this.offset;
     this.picture = new Image();
     this.picture.src = url;
-    this.moveTo = function(x,y){
+    this.setPos = function(x, y){
         this.initPosX = x;
         this.initPosY = y;
         this.update();
@@ -57,7 +61,5 @@ function Button(x, y, width, height, url, callback) {
 }
 
 function Buttons(){
-    this.refresh = new Button(10, 10, 30, 31, 'images/refresh.png', reset);
-    this.play = new Button(cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 20, 30, 34, 'images/play.png', play);
-    this.pause = new Button(50, 10, 30, 31, 'images/pause.png', pause);
 }
+

@@ -34,7 +34,7 @@ function Basket() {
             // this.x = (this.x+((dx-this.x)*0.1));
         };
 
-    this.moveTo = function(dx) {
+    this.setPos = function(dx) {
         dx = dx - this.width/2;
         if (dx < 0) {
             this.x = 0;

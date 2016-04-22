@@ -18,16 +18,16 @@ var isGamePaused = false;
 var rocketMoveStep = 50;
 var balls;
 var pat;
-var img;
-img = new Image();
+var backgroundImg;
+backgroundImg = new Image();
 var mission = {};
-var backgroundMusic = new Audio();
+var sounds = {};
 var isReady = 0;
 var imgsToPreload = [];
 var soundsToPreload = [];
 var mouseX, mouseY;
 var isMouseControl = true;
-
+var backgroundMusic = new Audio();
 window.onload = init;
 
 var requestAnimFrame = (function() {
@@ -50,6 +50,7 @@ var cancelAnimationFrame = (function() {
 })();
 
 var requestID = requestAnimFrame(main);
+
 
 function main() {
     var now = Date.now();
@@ -79,8 +80,6 @@ function reset() {
 }
 
 function gameOver() {
-    // buttons['pause'] = null;
-    // buttons = NULL;
     backgroundMusic.pause();
     isGamePaused =true;
     isGameOver = true;
@@ -92,8 +91,12 @@ function gameOver() {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText(message, cnvs.clientWidth / 2, cnvs.clientHeight / 2);
-    buttons['refresh'].moveTo(cnvs.clientWidth / 2 - 30/ 2,cnvs.clientHeight / 2 + 20);
+    // buttons = null;
+    buttons = {};
+    buttons.reset = BUTTON_RESET;
+    buttons.reset.setPos(cnvs.clientWidth / 2 - 30/ 2,cnvs.clientHeight / 2 + 20);
 }
+
 
 function update(dt) {
 
@@ -131,6 +134,13 @@ function play(){
     isGamePaused = false;
     durationGame++;
     backgroundMusic.play();
+    buttons = {};
+    buttons.reset = BUTTON_RESET;
+    buttons.reset.setPos(10, 10);
+    buttons.pause = BUTTON_PAUSE;
+    buttons.pause.setPos(50, 10);
+    buttons.muteUnmute = BUTTON_MUTEUNMUTE;
+    buttons.muteUnmute.setPos(90, 10);
 }
 
 function isCollision(objB, objA){
@@ -183,15 +193,13 @@ function Mission(){
 
 function render() {
     context.save();
-    pat = context.createPattern(img,"repeat");
+    pat = context.createPattern(backgroundImg,"repeat");
     context.fillStyle = pat;
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.fillStyle = "rgba(255,255,255,0.7)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.restore();
     balls.draw();
-    buttons['refresh'].draw();
-    buttons['pause'].draw();
     mission.draw();
     basket.draw();
     context.save();
@@ -200,6 +208,9 @@ function render() {
     context.fillText('Score : ' + score, cnvs.width - 10, 20);
     context.fillText('Ball speed : ' + ballSpeed, cnvs.width - 10, 40);
     context.restore();
+    for(var key in buttons){
+        buttons[key].draw();
+    }
 }
 
 function loadingScreen(){
@@ -243,7 +254,7 @@ function init() {
     }
 
     context.font = "26px FReminderPro-Regular";
-    img.src = 'images/gameBackground.jpg';
+    backgroundImg.src = 'images/gameBackground.jpg';
     loadingScreen();
     start();
     main();
@@ -251,7 +262,7 @@ function init() {
 
 function defineParams() {
     basket = new Basket();
-    buttons = new Buttons();
+    // buttons = new Buttons();
     lastTime = Date.now();
     score = 0;
     ballSpeed = 100;
@@ -284,8 +295,9 @@ function startScreen() {
     context.textBaseline = 'middle';
     context.fillText(message, cnvs.clientWidth / 2, cnvs.clientHeight / 2);
     context.fillText(instructions, cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 80);
-    buttons['play'].moveTo(cnvs.clientWidth / 2 - 15,  cnvs.clientHeight / 2 + 20);
-    buttons['play'].draw();
+    buttons = {};
+    buttons.play = BUTTON_PLAY;
+    buttons.play.setPos(cnvs.clientWidth / 2 - 15,  cnvs.clientHeight / 2 + 20);
 }
 
 
@@ -298,8 +310,9 @@ function pauseScreen(){
     context.textBaseline = 'middle';
     context.fillText("Paused", cnvs.clientWidth / 2, cnvs.clientHeight / 2);
     context.restore();
-    buttons['play'].moveTo(cnvs.clientWidth / 2 - 15,  cnvs.clientHeight / 2 + 20);
-    buttons['play'].draw();
+    buttons = {};
+    buttons.play = BUTTON_PLAY;
+    buttons.play.setPos(cnvs.clientWidth / 2 - 15,  cnvs.clientHeight / 2 + 20);
 }
 
 
@@ -350,5 +363,12 @@ function keydown(evt) {
         else {
             pause();
             }
+    }
+}
+
+
+function muteUnmute() {
+    for(var key in sounds){
+        sounds[key].play = false;
     }
 }
