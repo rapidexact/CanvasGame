@@ -15,7 +15,6 @@ function Button(x, y, width, height, url, callback) {
     this.initPosX = x;
     this.initPosY = y;
     this.offset = 0;
-    this.isVisible = true;
     this.x = this.initPosX + this.offset;
     this.y = this.initPosY + this.offset;
     this.picture = new Image();
@@ -27,7 +26,6 @@ function Button(x, y, width, height, url, callback) {
     };
 
     this.draw = function() {
-        //this.isVisible = true;
         context.drawImage(this.picture, this.x, this.y, this.width, this.height);
     };
 
@@ -40,18 +38,15 @@ function Button(x, y, width, height, url, callback) {
     };
 
     this.click = function() {
-        if(!this.isVisible){return;}
         clickSound.play();
         this.onclick();
     };
     this.onmouseon = function() {
-        if(!this.isVisible){return;}
         document.body.style.cursor = 'pointer';
         this.offset = 2;
         this.update();
     };
     this.onmouseout = function(){
-        if(!this.isVisible){return;}
         document.body.style.cursor = 'default';
         this.offset = 0;
         this.update();

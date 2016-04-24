@@ -169,6 +169,7 @@ function Mission(){
                 this.isCompleted = true;
             }
         }
+        basket.setProgressByPrsnt((100/this.count)*basket.ball.length + 1);
     };
     this.draw = function(){
         context.save();
@@ -178,11 +179,10 @@ function Mission(){
         this.ball.draw();
     }
 }
-// var sprite;
+
 function render() {
     context.save();
     bgPattern = context.createPattern(bgImg,"repeat");
-
     context.fillStyle = bgPattern;
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.fillStyle = "rgba(255,255,255,0.7)";
@@ -196,8 +196,6 @@ function render() {
     context.textAlign = 'end';
     context.fillText('Score : ' + score, cnvs.width - 10, 20);
     context.fillText('Ball speed : ' + ballSpeed, cnvs.width - 10, 40);
-    // sprite.update("1,2,3,2,1",10,0.0060);
-    // sprite.draw(100,100);
     context.restore();
     for(var key in buttons){
         buttons[key].draw();
@@ -249,8 +247,7 @@ function init() {
         return;
     }
 
-    context.font = "26px FReminderPro-Regular";
-    // context.font = "24px Karton";
+    context.font = "24px FReminderPro-Regular";
     bgImg.src = 'images/gameBackground.jpg';
     if(waitingForReady<2){loadingScreen();}
     start();
@@ -258,9 +255,7 @@ function init() {
 }
 
 function defineParams() {
-    // sprite = new Sprite(57,58,'images/ball_new(1).png');
     basket = new Basket();
-    // buttons = new Buttons();
     lastTime = Date.now();
     score = 0;
     ballSpeed = 100;

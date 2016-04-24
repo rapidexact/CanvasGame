@@ -5,38 +5,28 @@ function Basket() {
     this.ball = [];
     this.width = 70;
     this.height = 70;
-    this.picture = new Sprite(this.width,this.height,'images/basket.png');
+    this.progressInPrsnt = 1;
+    this.picture = new Sprite(3,'images/basket.png');
     this.x = ((cnvs.clientWidth) / 2) - (this.width / 2);
     this.y = cnvs.clientHeight - this.height;
     this.state = 3;
     this.draw = function() {
-        // context.save();
-        // context.strokeStyle = 'black';
-        // context.beginPath();
-        // context.moveTo(this.x, this.y);
-        // context.lineTo(this.x + this.width, this.y);
-        // context.stroke();
-        // context.restore();
-        // for (var i = 0; i < this.ball.length; i++) {
-            // if (this.ball[i] !== undefined) {
-            //     this.ball[i].x = (this.x + (this.width / 2)) - ((((this.ball[i].width * this.ball.length / 2)))) + (this.ball[i].width * i);
-            //     this.ball[i].y = this.y - this.ball[i].height;
-                // this.ball[i].draw();
-            // }
-        // }
+        if(this.ball.length!=0){
+        context.fillText("x"+this.ball.length,this.x + this.width,this.y - 5);}
+        this.picture.draw(this.x,this.y);
+    };
+    this.setProgressByPrsnt = function (_progress) {
+        this.progressInPrsnt = _progress;
     };
     this.update = function(dx) {
-        if(this.state < 1) this.state=3;
+            this.state = Math.ceil(this.progressInPrsnt/33);
         this.picture.update(this.state+"",60,60);
-        this.picture.draw(this.x,this.y);
         if(dx>cnvs.clientWidth - this.width){
             dx = cnvs.clientWidth - this.width/2;
         }else if(dx < this.width/2){
-                dx = this.width/2;
-            }
+                dx = this.width/2;}
             dx = dx-(this.width/2);
         this.x = smoothMove(this.x,dx);
-            // this.x = (this.x+((dx-this.x)*0.1));
         };
 
     this.setPos = function(dx) {
@@ -66,6 +56,5 @@ function Basket() {
     this.cth = function(ball) {
             this.ball[this.ball.length] = new Ball();
             this.ball[this.ball.length - 1] = ball;
-        this.state --;
     }
 }
