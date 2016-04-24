@@ -2,14 +2,13 @@
  * Created by alexander on 18.02.16.
  */
 function Ball() {
-    this.picture = new Image();
     this.changeParams = function() {
+        // this.picture.update("1,2,3,2,1",60,60);
         this.color = Math.floor(Math.random() * 5) + 1;
-        this.picture.src = 'images/ball(' + this.color + ').png';
-        this.height = 70;
-        // this.height = this.picture.naturalHeight;
-        this.width = 70;
-        // this.width = this.picture.naturalWidth;
+        this.height = 57;
+        this.width = 58;
+        // this.picture = new Sprite();
+        this.picture = new Sprite(this.width,this.height, 'images/ball_new('+ this.color +').png');
         this.x = Math.floor((Math.random() * Math.random() / Math.random())%1 * (cnvs.clientWidth - this.width));
         this.y = Math.floor((Math.random() * Math.random() / Math.random())%1 * - 4000) - this.height;
         this.multiplier = Math.random();// * Math.random() / Math.random();
@@ -17,10 +16,14 @@ function Ball() {
     };
     this.changeParams();
     this.draw = function() {
-        context.drawImage(this.picture, this.x, this.y,this.width,this.height);
+        // context.drawImage(this.picture, this.x, this.y,this.width,this.height);
+        // context.rect(this.x,this.y,this.x+this.width, this.y+this.height);
+        // context.fillRect(this.x,this.y,this.x+this.width, this.y+this.height);
+        this.picture.draw(this.x,this.y);
     };
 
     this.update = function(dt) {
+        this.picture.update("1,2,3,2,1",60,dt);
         if (this.y < cnvs.height-10) {
             this.y = Math.ceil(smoothMove(this.y, this.y+Math.ceil(dt * ballSpeed * 10 + this.multiplier)));
             // this.y += Math.ceil(dt * ballSpeed + this.multiplier);

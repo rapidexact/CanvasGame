@@ -1,10 +1,10 @@
 /**
  * Created by alexander on 18.02.16.
  */
-var BUTTON_PLAY = new Button(100,100, 30, 34, 'images/play.png', play);
-var BUTTON_PAUSE = new Button(50, 10, 30, 31, 'images/pause.png', pause);
-var BUTTON_RESET = new Button(10, 10, 30, 31, 'images/refresh.png', reset);
-var BUTTON_MUTEUNMUTE = new Button(10, 10, 36, 36, 'images/ic_volume_off_black_18dp.png', muteUnmute);
+var BUTTON_PLAY = new Button(100,100, 40, 40, 'images/play_new.png', play);
+var BUTTON_PAUSE = new Button(50, 10, 40, 40, 'images/pause_new.png', pause);
+var BUTTON_RESET = new Button(10, 10, 40, 40, 'images/refresh_new.png', reset);
+var BUTTON_MUTEUNMUTE = new Button(10, 10, 40, 40, 'images/unmute_new.png', muteUnmute);
 
 function Button(x, y, width, height, url, callback) {
     var clickSound = new Audio();

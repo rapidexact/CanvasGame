@@ -1,23 +1,9 @@
 body {
     background-color:#FFFBF6;
-    /*font-family: FReminderPro-Regular;*/
-    font-family: Karton;
+    font-family: FReminderPro-Regular;
     font-size: 20px;
 }
 
-@font-face {
-    font-family: "Cenotaph";
-    src: url('../fonts/Cenotaph-Titling.otf');
-}
-
-@font-face {
-    font-family: "Lasco";
-    src: url('../fonts/Lasco-Regular.ttf');
-}
-@font-face {
-    font-family: "Karton";
-    src: url('../fonts/Karton.ttf');
-}
 @font-face {
     font-family: "FReminderPro-Regular";
     src: url('../fonts/PFReminderPro-Regular.ttf');

@@ -178,10 +178,11 @@ function Mission(){
         this.ball.draw();
     }
 }
-
+var sprite;
 function render() {
     context.save();
     bgPattern = context.createPattern(bgImg,"repeat");
+
     context.fillStyle = bgPattern;
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.fillStyle = "rgba(255,255,255,0.7)";
@@ -195,6 +196,8 @@ function render() {
     context.textAlign = 'end';
     context.fillText('Score : ' + score, cnvs.width - 10, 20);
     context.fillText('Ball speed : ' + ballSpeed, cnvs.width - 10, 40);
+    sprite.update("1,2,3,2,1",10,0.0060);
+    sprite.draw(100,100);
     context.restore();
     for(var key in buttons){
         buttons[key].draw();
@@ -214,14 +217,19 @@ function loadingScreen(){
 
 function init() {
     imgsToPreload.push('images/gameBackground.jpg',
-        'images/balls(1).png',
-        'images/balls(2).png',
-        'images/balls(3).png',
-        'images/balls(4).png',
-        'images/balls(5).png',
-        'images/pause.png',
-        'images/play.png',
-        'images/refresh.png'
+        'images/ball(1).png',
+        'images/ball(2).png',
+        'images/ball(3).png',
+        'images/ball(4).png',
+        'images/ball(5).png',
+        'images/pause_new.png',
+        'images/play_new.png',
+        'images/refresh_new.png',
+        'images/ball_new(1).png',
+        'images/ball_new(2).png',
+        'images/ball_new(3).png',
+        'images/ball_new(4).png',
+        'images/ball_new(5).png'
     );
     soundsToPreload.push('sounds/bensound-littleidea.mp3');
 
@@ -249,6 +257,7 @@ function init() {
 }
 
 function defineParams() {
+    sprite = new Sprite(57,58,'images/ball_new(1).png');
     basket = new Basket();
     // buttons = new Buttons();
     lastTime = Date.now();
@@ -297,7 +306,7 @@ function startScreen() {
 
 function pauseScreen(){
     context.save();
-    context.fillStyle = "rgba(254, 249, 245,0.1)";
+    context.fillStyle = "rgba(254, 249, 245,0.5)";
     context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
     context.fillStyle = "black";
     context.textAlign = 'center';
