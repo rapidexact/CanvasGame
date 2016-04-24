@@ -6,11 +6,11 @@ function Sprite(_width,_height,_url) {
     this.lastChangeSec= 0;
     this.curFrameNuminSerial = 0;
     this.curFrameNum = 0;
-    this.width =  _width;
-    this.height = _height;
     this.url = _url;
     this.image = new Image();
     this.image.src = this.url;
+    this.width =  this.image.naturalWidth / 3;
+    this.height = this.image.naturalHeight;
     this.update = function (_frameSerial, _speed, _dt) {
         // log(_dt," ");
         _dt = _dt * 10000;

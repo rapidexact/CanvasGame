@@ -178,7 +178,7 @@ function Mission(){
         this.ball.draw();
     }
 }
-var sprite;
+// var sprite;
 function render() {
     context.save();
     bgPattern = context.createPattern(bgImg,"repeat");
@@ -196,8 +196,8 @@ function render() {
     context.textAlign = 'end';
     context.fillText('Score : ' + score, cnvs.width - 10, 20);
     context.fillText('Ball speed : ' + ballSpeed, cnvs.width - 10, 40);
-    sprite.update("1,2,3,2,1",10,0.0060);
-    sprite.draw(100,100);
+    // sprite.update("1,2,3,2,1",10,0.0060);
+    // sprite.draw(100,100);
     context.restore();
     for(var key in buttons){
         buttons[key].draw();
@@ -229,7 +229,8 @@ function init() {
         'images/ball_new(2).png',
         'images/ball_new(3).png',
         'images/ball_new(4).png',
-        'images/ball_new(5).png'
+        'images/ball_new(5).png',
+        'images/basket.png'
     );
     soundsToPreload.push('sounds/bensound-littleidea.mp3');
 
@@ -257,7 +258,7 @@ function init() {
 }
 
 function defineParams() {
-    sprite = new Sprite(57,58,'images/ball_new(1).png');
+    // sprite = new Sprite(57,58,'images/ball_new(1).png');
     basket = new Basket();
     // buttons = new Buttons();
     lastTime = Date.now();

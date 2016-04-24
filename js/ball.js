@@ -5,8 +5,10 @@ function Ball() {
     this.changeParams = function() {
         // this.picture.update("1,2,3,2,1",60,60);
         this.color = Math.floor(Math.random() * 5) + 1;
+
         this.width = 57;
         this.height = 58;
+        
         // this.picture = new Sprite();
         this.picture = new Sprite(this.width,this.height, 'images/ball_new('+ this.color +').png');
         this.x = Math.floor((Math.random() * Math.random() / Math.random())%1 * (cnvs.clientWidth - this.width));
