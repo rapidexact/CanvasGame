@@ -1,6 +1,5 @@
 /*
 TODO
-проверка на вхождение двух обьектов
 сделать следующую цель
 */
 
@@ -20,11 +19,12 @@ var bgImg;
 bgImg = new Image();
 var mission = {};
 var sounds = {};
-var waitingForReady = 2;
+var waitingForReady = 0;
 var imgsToPreload = [];
 var soundsToPreload = [];
 var mouseX, mouseY;
 var isMouseControl = true;
+var ballCount = 15;
 sounds.backgroundMusic = new Audio();
 window.onload = init;
 
@@ -60,6 +60,7 @@ function main() {
 }
 
 function start(){
+    sounds.backgroundMusic.muted = true;
     defineParams();
     startScreen();
 }
@@ -74,7 +75,6 @@ function reset() {
 }
 
 function gameOver() {
-    // muteUnmute();
     sounds.backgroundMusic.pause();
     isGamePaused =true;
     isGameOver = true;
@@ -93,7 +93,6 @@ function gameOver() {
 
 
 function update(dt) {
-
     if(durationGame==0){
         startScreen();
         return;
@@ -137,25 +136,20 @@ function play(){
     buttons.muteUnmute.setPos(90, 10);
 }
 
-function isCollision(objB, objA){
+function isRectCollision(objB, objA){
+    return isDirectLineCollision(objA.x, objA.x+objA.width, objB.x, objB.x+objB.width)
+    && isDirectLineCollision(objA.y, objA.y+objA.height, objB.y, objB.y+objB.height)
+    ? true:false;
+}
 
-    if (isEntry(objA,objB.x,objB.y)){
-        return true;
-    }   else if(isEntry(objA,objB.x + objB.width,objB.y)){
-        return true;
-    }   else if(isEntry(objA,objB.x,objB.y + objB.height)){
-        return true;
-    }   else if(isEntry(objA,objB.x + objB.width,objB.y + objB.height)){
-        return true;
-    }
-return false;
+function isDirectLineCollision(ax1,ax2,bx1,bx2) {
+    return (ax2>bx1 && ax1<bx2)?true:false;
 }
 
 function isEntry(objA,pointX,pointY){
-    if(pointX>objA.x && pointX < objA.x + objA.width){
-        if(pointY > objA.y && pointY < objA.y + objA.height)
-        return true;
-    }else return false;
+    return (pointX>objA.x && pointX < objA.x + objA.width)
+    && (pointY > objA.y && pointY < objA.y + objA.height)
+    ? true: false;
 }
 function Mission(){
     this.ball = new Ball();
@@ -227,13 +221,12 @@ function init() {
         'images/balls(5).png',
         'images/pause.png',
         'images/play.png',
-        'images/power.png',
         'images/refresh.png'
     );
     soundsToPreload.push('sounds/bensound-littleidea.mp3');
 
-    preloadImages(imgsToPreload, function(){waitingForReady--;});
-    preloadSounds(soundsToPreload, function(){waitingForReady--;})
+    preloadImages(imgsToPreload, function(){waitingForReady++;});
+    preloadSounds(soundsToPreload, function(){waitingForReady++;})
     window.document.addEventListener('click', click, true);
     window.onmousemove = mousemove;
     window.onkeydown = keydown;
@@ -248,8 +241,9 @@ function init() {
     }
 
     context.font = "26px FReminderPro-Regular";
+    // context.font = "24px Karton";
     bgImg.src = 'images/gameBackground.jpg';
-    loadingScreen();
+    if(waitingForReady<2){loadingScreen();}
     start();
     main();
 }
@@ -263,15 +257,21 @@ function defineParams() {
     durationGame = 0;
     isGameOver = false;
     isGamePaused = true;
-    balls = new BallManager(20);
+    balls = new BallManager(ballCount);
     mission = new Mission();
     sounds.backgroundMusic.src = 'sounds/bensound-littleidea.mp3';
     sounds.backgroundMusic.loop = true;
     sounds.backgroundMusic.volume = 0.1;
 }
 
-function log(str){
-    document.getElementById('log').innerHTML = str + " ";
+function log(){
+    for (var key in arguments){
+        document.getElementById('log').innerHTML += arguments[key] + " ";
+    }
+    if(document.getElementById('log').innerHTML.length >= 500){
+        document.getElementById('log').innerHTML = "";
+    }
+
 }
 
 function startScreen() {

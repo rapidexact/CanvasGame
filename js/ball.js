@@ -4,12 +4,14 @@
 function Ball() {
     this.picture = new Image();
     this.changeParams = function() {
-        this.height = 70;//this.picture.naturalHeight;
-        this.width = 70;//this.picture.naturalWidth;
+        this.color = Math.floor(Math.random() * 5) + 1;
+        this.picture.src = 'images/ball(' + this.color + ').png';
+        this.height = 70;
+        // this.height = this.picture.naturalHeight;
+        this.width = 70;
+        // this.width = this.picture.naturalWidth;
         this.x = Math.floor((Math.random() * Math.random() / Math.random())%1 * (cnvs.clientWidth - this.width));
         this.y = Math.floor((Math.random() * Math.random() / Math.random())%1 * - 4000) - this.height;
-        this.color = Math.floor(Math.random() * 5) + 1;
-        this.picture.src = 'images/balls(' + this.color + ').png';
         this.multiplier = Math.random();// * Math.random() / Math.random();
         this.isDied = false;
     };
@@ -20,7 +22,7 @@ function Ball() {
 
     this.update = function(dt) {
         if (this.y < cnvs.height-10) {
-            this.y = smoothMove(this.y, this.y+Math.ceil(dt * ballSpeed * 10 + this.multiplier));
+            this.y = Math.ceil(smoothMove(this.y, this.y+Math.ceil(dt * ballSpeed * 10 + this.multiplier)));
             // this.y += Math.ceil(dt * ballSpeed + this.multiplier);
         } else {
             this.isDied = true;
@@ -33,12 +35,11 @@ function BallManager(ballsCount){
     this.balls = [];
     this.addNew = function(){
         this.balls.push(new Ball());
-        for(i=0;i<this.balls.length;i++){
-            for(var key in this.balls){
-                if(isCollision(this.balls[this.balls.length-1],this.balls[key]))   {
-                    this.balls[this.balls.length-1].changeParams();
-                    i=0;
-                }
+        for(var i=0;i<this.balls.length;i++){
+            if(this.balls.length-1==i){continue;}
+                if(isRectCollision(this.balls[i],this.balls[this.balls.length-1]))   {
+                this.balls[this.balls.length-1].changeParams();
+                 i=-1;
             }}
     };
     for (var i = 0; i < this.count; i++){
@@ -51,7 +52,7 @@ function BallManager(ballsCount){
                 this.balls.splice(key,1);
                 this.addNew();
             }
-            if (isCollision(this.balls[key], basket)) {
+            if (isRectCollision(this.balls[key], basket, "catch")) {
                 basket.cth(this.balls[key]);
                 this.balls[key].isDied = true;
             }

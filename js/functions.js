@@ -32,5 +32,5 @@ function getProps(toObj, tcSplit)
 }
 
 function smoothMove(a,b) {
-    return (a + ((b - a) * 0.1));
+    return Math.ceil(a + ((b - a) * 0.1));
 }
