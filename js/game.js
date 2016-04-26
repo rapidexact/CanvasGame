@@ -116,8 +116,8 @@ function update(dt) {
     if(isMouseControl) {
         basket.update(mouseX);
     }
-    if (durationGame / 10 > 1) {
-        durationGame = 0;
+    if (durationGame > ballSpeed/2) {
+        // durationGame = 0;
         ballSpeed += 10;
     }
     durationGame += dt;
@@ -143,14 +143,14 @@ function isRectCollision(objB, objA){
 }
 
 function isDirectLineCollision(ax1,ax2,bx1,bx2) {
-    return (ax2>bx1 && ax1<bx2)?true:false;
+    return !!(ax2 > bx1 && ax1 < bx2);
 }
 
 function isEntry(objA,pointX,pointY){
-    return (pointX>objA.x && pointX < objA.x + objA.width)
-    && (pointY > objA.y && pointY < objA.y + objA.height)
-    ? true: false;
+    return !!((pointX > objA.x && pointX < objA.x + objA.width)
+    && (pointY > objA.y && pointY < objA.y + objA.height));
 }
+
 function Mission(){
     this.ball = new Ball();
     this.ball.changeParams();
@@ -169,7 +169,7 @@ function Mission(){
                 this.isCompleted = true;
             }
         }
-        basket.setProgressByPrsnt((100/this.count)*basket.ball.length + 1);
+        basket.setProgressByPrsnt((100/this.count+1)*basket.ball.length);
     };
     this.draw = function(){
         context.save();
@@ -196,6 +196,9 @@ function render() {
     context.textAlign = 'end';
     context.fillText('Score : ' + score, cnvs.width - 10, 20);
     context.fillText('Ball speed : ' + ballSpeed, cnvs.width - 10, 40);
+    var minutes = Math.floor(durationGame/60);
+    var seconds = (durationGame%60>10)?Math.floor(durationGame%60):"0"+Math.floor(durationGame%10);
+    context.fillText('Time : ' + minutes +":"+ seconds, cnvs.width - 10, 60);
     context.restore();
     for(var key in buttons){
         buttons[key].draw();
@@ -215,25 +218,22 @@ function loadingScreen(){
 
 function init() {
     imgsToPreload.push('images/gameBackground.jpg',
-        'images/ball(1).png',
-        'images/ball(2).png',
-        'images/ball(3).png',
-        'images/ball(4).png',
-        'images/ball(5).png',
         'images/pause_new.png',
         'images/play_new.png',
         'images/refresh_new.png',
+        'images/unmute_new.png',
+        'images/mute_new.png',
         'images/ball_new(1).png',
         'images/ball_new(2).png',
         'images/ball_new(3).png',
         'images/ball_new(4).png',
         'images/ball_new(5).png',
-        'images/basket.png'
+        'images/basket_new.png'
     );
-    soundsToPreload.push('sounds/bensound-littleidea.mp3');
+    soundsToPreload.push('sounds/Hopscotch.mp3');
 
-    preloadImages(imgsToPreload, function(){waitingForReady++;});
-    preloadSounds(soundsToPreload, function(){waitingForReady++;})
+    preloadImages(imgsToPreload, setReadyProgress);
+    preloadSounds(soundsToPreload, setReadyProgress);
     window.document.addEventListener('click', click, true);
     window.onmousemove = mousemove;
     window.onkeydown = keydown;
@@ -246,7 +246,6 @@ function init() {
     if (!context) {
         return;
     }
-
     context.font = "24px FReminderPro-Regular";
     bgImg.src = 'images/gameBackground.jpg';
     if(waitingForReady<2){loadingScreen();}
@@ -264,7 +263,7 @@ function defineParams() {
     isGamePaused = true;
     balls = new BallManager(ballCount);
     mission = new Mission();
-    sounds.backgroundMusic.src = 'sounds/bensound-littleidea.mp3';
+    sounds.backgroundMusic.src = 'sounds/Hopscotch.mp3';
     sounds.backgroundMusic.loop = true;
     sounds.backgroundMusic.volume = 0.1;
 }
@@ -280,7 +279,7 @@ function log(){
 }
 
 function startScreen() {
-    if(waitingForReady==0){
+    if(waitingForReady<2){
         loadingScreen();
         return;
     }
@@ -347,22 +346,20 @@ function keydown(evt) {
     var keyCode = evt.keyCode;
 
     isMouseControl = false;
-    // if(isGamePaused){return;}
-        if (keyCode == 37){
-        basket.move(-rocketMoveStep);
-    }
-    if (keyCode == 39){
-        basket.move(rocketMoveStep);}
-
-
     if(keyCode == 32 || keyCode == 27){
         if(isGamePaused) {
             play();
         }
         else {
             pause();
-            }
+        }
     }
+    if(isGamePaused){return;}
+        if (keyCode == 37){
+        basket.move(-rocketMoveStep);
+    }
+    if (keyCode == 39){
+        basket.move(rocketMoveStep);}
 }
 
 
@@ -370,4 +367,8 @@ function muteUnmute() {
     for(var key in sounds){
         sounds[key].muted = !sounds[key].muted;
     }
+}
+
+function setReadyProgress() {
+    waitingForReady+= 1;
 }

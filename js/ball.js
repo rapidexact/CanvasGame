@@ -4,9 +4,12 @@
 function Ball() {
     this.changeParams = function() {
         this.color = Math.floor(Math.random() * 5) + 1;
-        this.width = 57;
-        this.height = 58;
-        this.picture = new Sprite(3, 'images/ball_new('+ this.color +').png');
+        this.states = 3;
+        this.picture = new Image();
+        this.picture.src = 'images/ball_new('+ this.color +').png';
+        this.width = this.picture.naturalWidth/this.states;
+        this.height = this.picture.naturalHeight;
+        this.picture = new Sprite(this.width,this.height, 'images/ball_new('+ this.color +').png');
         this.x = Math.floor((Math.random() * Math.random() / Math.random())%1 * (cnvs.clientWidth - this.width));
         this.y = Math.floor((Math.random() * Math.random() / Math.random())%1 * - 4000) - this.height;
         this.multiplier = Math.random();
@@ -18,7 +21,7 @@ function Ball() {
     };
 
     this.update = function(dt) {
-        this.picture.update("1,2,3,2,1",60,dt);
+        this.picture.update("1,2,3,2,1",1/2,dt);
         if (this.y < cnvs.height-10) {
             this.y = Math.ceil(smoothMove(this.y, this.y+Math.ceil(dt * ballSpeed * 10 + this.multiplier)));
         } else {
