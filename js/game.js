@@ -1,7 +1,15 @@
 /*
-TODO
-сделать следующую цель
-*/
+ TODO
+ бонусы\антибонусы
+ перерисовать анимацию
+ рефакторинг
+ выровнять отступы
+ конгфиг жс
+ алгоритм расстановки
+ Корзинка на задания
+ менеджер экранов
+ режимы игры
+ */
 
 var cnvs, context;
 var ballSpeed;
@@ -17,38 +25,23 @@ var balls;
 var bgPattern;
 var bgImg;
 bgImg = new Image();
-var mission = {};
 var sounds = {};
 var waitingForReady = 0;
 var imgsToPreload = [];
+var preloadedImages = [];
+var preloadedSounds = [];
 var soundsToPreload = [];
 var mouseX, mouseY;
 var isMouseControl = true;
 var ballCount = 15;
+var isGameReady = false;
 sounds.backgroundMusic = new Audio();
 window.onload = init;
-
-var requestAnimFrame = (function() {
-    return window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-        function(callback) {
-            window.setTimeout(callback, 1000 / 60);
-        };
-})();
-
-var cancelAnimationFrame = (function() {
-    return window.cancelAnimationFrame ||
-        window.webkitCancelAnimationFrame ||
-        window.mozCancelAnimationFrame ||
-        window.oCancelAnimationFrame ||
-        window.msCancelAnimationFrame
-})();
-
+var buttonsManager;
+var FONT_MAIN = "24px FReminderPro-Regular";
 var requestID = requestAnimFrame(main);
-
+var missionMan;
+var lastRecord;
 
 function main() {
     var now = Date.now();
@@ -59,7 +52,7 @@ function main() {
     requestID = requestAnimFrame(main);
 }
 
-function start(){
+function start() {
     sounds.backgroundMusic.muted = true;
     defineParams();
     startScreen();
@@ -76,56 +69,47 @@ function reset() {
 
 function gameOver() {
     sounds.backgroundMusic.pause();
-    isGamePaused =true;
+    isGamePaused = true;
     isGameOver = true;
-    var message = "GAME OVER !";
-    context.save();
-    context.fillStyle = "rgba(254, 249, 245,0.1)";
-    context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
-    context.restore();
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillText(message, cnvs.clientWidth / 2, cnvs.clientHeight / 2);
-    buttons = {};
-    buttons.reset = BUTTON_RESET;
-    buttons.reset.setPos(cnvs.clientWidth / 2 - 30/ 2,cnvs.clientHeight / 2 + 20);
+    var storage = localStorage;
+    if (storage.getItem('record') < score) {
+        storage.setItem('record', score);
+    }
+    curRenderScreen = gameOverScreen;
 }
 
 
 function update(dt) {
-    if(durationGame==0){
+    if (durationGame == 0) {
         startScreen();
         return;
     }
 
-    if(isGameOver){
+    if (isGameOver) {
         gameOver();
         return;
     }
 
-    if(isGamePaused){
+    if (isGamePaused) {
         pauseScreen();
         return;
     }
-
-    mission.update();
-    if(mission.isCompleted){
-        mission = new Mission();
-    }
+    missionMan.update();
     balls.update(dt);
-    if(isMouseControl) {
+    if (isMouseControl) {
         basket.update(mouseX);
     }
-    if (durationGame > ballSpeed/2) {
-        // durationGame = 0;
+    if (durationGame > ballSpeed / 2) {
         ballSpeed += 10;
     }
     durationGame += dt;
 }
 
-function play(){
+function play() {
     isGamePaused = false;
-    durationGame++;
+    if (durationGame == 0) {
+        durationGame++;
+    }
     sounds.backgroundMusic.play();
     buttons = {};
     buttons.reset = BUTTON_RESET;
@@ -134,87 +118,18 @@ function play(){
     buttons.pause.setPos(50, 10);
     buttons.muteUnmute = BUTTON_MUTEUNMUTE;
     buttons.muteUnmute.setPos(90, 10);
+    curRenderScreen = gameScreen;
 }
 
-function isRectCollision(objB, objA){
-    return isDirectLineCollision(objA.x, objA.x+objA.width, objB.x, objB.x+objB.width)
-    && isDirectLineCollision(objA.y, objA.y+objA.height, objB.y, objB.y+objB.height)
-    ? true:false;
-}
 
-function isDirectLineCollision(ax1,ax2,bx1,bx2) {
-    return !!(ax2 > bx1 && ax1 < bx2);
-}
+function curRenderScreen() {
 
-function isEntry(objA,pointX,pointY){
-    return !!((pointX > objA.x && pointX < objA.x + objA.width)
-    && (pointY > objA.y && pointY < objA.y + objA.height));
-}
-
-function Mission(){
-    this.ball = new Ball();
-    this.ball.changeParams();
-    this.ball.x = cnvs.clientWidth - this.ball.width - 20;
-    this.ball.y = cnvs.clientHeight - 400;
-    this.count = Math.ceil(Math.random() * 10 / 3);
-    this.isCompleted = false;
-    this.update = function(){
-        if(basket.ball.length!=0){
-            if (basket.ball[basket.ball.length-1].color != this.ball.color){
-                isGameOver = true;
-            }
-            else if (basket.ball.length == this.count) {
-                basket.ball = [];
-                score+=this.count;
-                this.isCompleted = true;
-            }
-        }
-        basket.setProgressByPrsnt((100/this.count+1)*basket.ball.length);
-    };
-    this.draw = function(){
-        context.save();
-        context.textAlign = 'end';
-        context.fillText("Target x"+this.count, cnvs.clientWidth - 10, this.ball.y - 20);
-        context.restore();
-        this.ball.draw();
-    }
 }
 
 function render() {
-    context.save();
-    bgPattern = context.createPattern(bgImg,"repeat");
-    context.fillStyle = bgPattern;
-    context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
-    context.fillStyle = "rgba(255,255,255,0.7)";
-    context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
-    context.restore();
-    balls.draw();
-    mission.draw();
-    basket.draw();
-    context.save();
-    context.fillStyle = "black";
-    context.textAlign = 'end';
-    context.fillText('Score : ' + score, cnvs.width - 10, 20);
-    context.fillText('Ball speed : ' + ballSpeed, cnvs.width - 10, 40);
-    var minutes = Math.floor(durationGame/60);
-    var seconds = (durationGame%60>10)?Math.floor(durationGame%60):"0"+Math.floor(durationGame%10);
-    context.fillText('Time : ' + minutes +":"+ seconds, cnvs.width - 10, 60);
-    context.restore();
-    for(var key in buttons){
-        buttons[key].draw();
-    }
+    curRenderScreen();
 }
 
-function loadingScreen(){
-    context.save();
-    context.fillStyle = "rgba(254, 249, 245,1)";
-    context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
-    context.fillStyle = "black";
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillText("Loading...", cnvs.clientWidth / 2, cnvs.clientHeight / 2);
-    context.restore();
-}
 
 function init() {
     imgsToPreload.push('images/gameBackground.jpg',
@@ -231,9 +146,8 @@ function init() {
         'images/basket_new.png'
     );
     soundsToPreload.push('sounds/Hopscotch.mp3');
-
-    preloadImages(imgsToPreload, setReadyProgress);
-    preloadSounds(soundsToPreload, setReadyProgress);
+    preloadImages(imgsToPreload, preloadedImages, incrementLoadProgress);
+    preloadSounds(soundsToPreload, preloadedSounds, incrementLoadProgress);
     window.document.addEventListener('click', click, true);
     window.onmousemove = mousemove;
     window.onkeydown = keydown;
@@ -246,9 +160,12 @@ function init() {
     if (!context) {
         return;
     }
-    context.font = "24px FReminderPro-Regular";
+    context.font = FONT_MAIN;
     bgImg.src = 'images/gameBackground.jpg';
-    if(waitingForReady<2){loadingScreen();}
+    sounds.backgroundMusic.src = 'sounds/Hopscotch.mp3';
+    sounds.backgroundMusic.loop = true;
+    sounds.backgroundMusic.volume = 0.1;
+
     start();
     main();
 }
@@ -262,63 +179,28 @@ function defineParams() {
     isGameOver = false;
     isGamePaused = true;
     balls = new BallManager(ballCount);
-    mission = new Mission();
-    sounds.backgroundMusic.src = 'sounds/Hopscotch.mp3';
-    sounds.backgroundMusic.loop = true;
-    sounds.backgroundMusic.volume = 0.1;
+    buttonsManager = new Buttons();
+    missionMan = new missionManager(3);
+    lastRecord = localStorage.getItem('record');
+    if(lastRecord == undefined){ lastRecord = 0;}
 }
 
-function log(){
-    for (var key in arguments){
+
+function log() {
+    for (var key in arguments) {
         document.getElementById('log').innerHTML += arguments[key] + " ";
     }
-    if(document.getElementById('log').innerHTML.length >= 500){
+    if (document.getElementById('log').innerHTML.length >= 1000) {
         document.getElementById('log').innerHTML = "";
     }
-
-}
-
-function startScreen() {
-    if(waitingForReady<2){
-        loadingScreen();
-        return;
-    }
-    var message = "Welcome !";
-    var instructions = "For moving rocket use mouse or keyboard arrows";
-    context.save();
-    context.fillStyle = "rgba(254, 249, 245,0.5)";
-    context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
-    context.restore();
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillText(message, cnvs.clientWidth / 2, cnvs.clientHeight / 2);
-    context.fillText(instructions, cnvs.clientWidth / 2, cnvs.clientHeight / 2 + 80);
-    buttons = {};
-    buttons.play = BUTTON_PLAY;
-    buttons.play.setPos(cnvs.clientWidth / 2 - 15,  cnvs.clientHeight / 2 + 20);
-}
-
-
-function pauseScreen(){
-    context.save();
-    context.fillStyle = "rgba(254, 249, 245,0.5)";
-    context.fillRect(0, 0, cnvs.clientWidth, cnvs.clientHeight);
-    context.fillStyle = "black";
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillText("Paused", cnvs.clientWidth / 2, cnvs.clientHeight / 2);
-    context.restore();
-    buttons = {};
-    buttons.play = BUTTON_PLAY;
-    buttons.play.setPos(cnvs.clientWidth / 2 - 15,  cnvs.clientHeight / 2 + 20);
 }
 
 
 function click(evt) {
     mouseX = evt.pageX - cnvs.offsetLeft;
     mouseY = evt.pageY - cnvs.offsetTop;
-    for (var key in buttons){
-        if (isEntry(buttons[key],mouseX,mouseY)){
+    for (var key in buttons) {
+        if (isEntry(buttons[key], mouseX, mouseY)) {
             buttons[key].click();
             break;
         }
@@ -329,15 +211,15 @@ function mousemove(evt) {
     isMouseControl = true;
     mouseX = evt.pageX - cnvs.offsetLeft;
     mouseY = evt.pageY - cnvs.offsetTop;
-    for (var key in buttons){
-        if(isEntry(buttons[key],mouseX,mouseY)){
+    for (var key in buttons) {
+        if (isEntry(buttons[key], mouseX, mouseY)) {
             buttons[key].onmouseon();
             break;
-        }   else{
+        } else {
             buttons[key].onmouseout();
         }
     }
-    if(!isGamePaused) {
+    if (!isGamePaused) {
         basket.update(mouseX);
     }
 }
@@ -346,29 +228,116 @@ function keydown(evt) {
     var keyCode = evt.keyCode;
 
     isMouseControl = false;
-    if(keyCode == 32 || keyCode == 27){
-        if(isGamePaused) {
+    if (keyCode == 32 || keyCode == 27) {
+        if (isGameOver) {
+            start();
+        }
+        if (isGamePaused) {
             play();
         }
         else {
             pause();
         }
     }
-    if(isGamePaused){return;}
-        if (keyCode == 37){
+    if (isGamePaused) {
+        return;
+    }
+
+    if (keyCode == 37) {
         basket.move(-rocketMoveStep);
     }
-    if (keyCode == 39){
-        basket.move(rocketMoveStep);}
+    if (keyCode == 39) {
+        basket.move(rocketMoveStep);
+    }
 }
 
 
 function muteUnmute() {
-    for(var key in sounds){
+    for (var key in sounds) {
         sounds[key].muted = !sounds[key].muted;
     }
 }
 
-function setReadyProgress() {
-    waitingForReady+= 1;
+function incrementLoadProgress() {
+    waitingForReady++;
+    if (waitingForReady < 2) {
+        curRenderScreen = loadingScreen;
+    }
+    else {
+        curRenderScreen = startScreen;
+        isGameReady = true;
+    }
+    if (isGameReady) {
+        start();
+    }
+}
+
+
+function Mission() {
+    this.ball = new Ball();
+    this.ball.randomize();
+    this.ball.x = cnvs.clientWidth - this.ball.width - 30;
+    this.ball.y = cnvs.clientHeight - 400;
+    this.count = Math.ceil(Math.random() * 10 / 3);
+    this.isCompleted = false;
+    this.update = function () {
+        if (basket.ball.length != 0) {
+            if (basket.ball[basket.ball.length - 1].color != this.ball.color) {
+                isGameOver = true;
+            }
+            else if (basket.ball.length == this.count) {
+                basket.ball = [];
+                score += this.count;
+                this.isCompleted = true;
+            }
+        }
+        basket.setProgressByPrsnt((100 / this.count + 1) * basket.ball.length);
+    };
+    this.draw = function () {
+        context.save();
+        context.textAlign = 'start';
+        context.fillText("x" + this.count, this.ball.x + this.ball.width, this.ball.y + 10);
+        context.restore();
+        this.ball.draw();
+    }
+}
+
+
+function missionManager(_count) {
+    var missionStackOffset = 30;
+    this.missions = [];
+    var step = 80;
+    this.basket = new Basket();
+
+
+    this.update = function () {
+        for (var key in this.missions) {
+            this.missions[0].update();
+            var pos = missionStackOffset + ((-parseInt(key) + 3) * step);
+            this.missions[key].ball.y = smoothMove(this.missions[key].ball.y, pos);
+            if (this.missions[key].isCompleted) {
+                this.missions.splice(key, 1);
+                this.addNew();
+
+            }
+        }
+    };
+    this.draw = function () {
+        for (var key in this.missions) {
+            this.missions[key].draw();
+        }
+        this.basket.draw();
+
+    };
+    this.addNew = function () {
+        this.missions.push(new Mission());
+        this.missions[this.missions.length - 1].ball.y = -(this.missions.length + 1) * step;
+        this.basket.x = this.missions[this.missions.length-1].ball.x + this.missions[this.missions.length-1].ball.width / 2 - this.basket.width/2;
+        this.basket.y = (this.missions.length + 1) * step + missionStackOffset;
+    };
+    for (var i = 0; i < _count; i++) {
+        this.addNew();
+    }
+
+
 }

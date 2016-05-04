@@ -1,15 +1,14 @@
 /**
  * Created by alexander on 23.02.16.
  */
-function preloadImages(images,callback){
-    var imgs;
+function preloadImages(images,preloadedImgs,callback){
+    preloadedImgs = [];
     if(images instanceof Array){
         var total = images.length, loaded = 0;
-        imgs =[];
       for(var key in images){
-          imgs.push(new Image());
-          imgs[key].src = images[key];
-          imgs[key].onload = new function (){
+          preloadedImgs[key] = new Image();
+          preloadedImgs[key].src = images[key];
+          preloadedImgs[key].onload = function (){
               loaded++;
               if(loaded == total){
                   callback();
@@ -18,13 +17,13 @@ function preloadImages(images,callback){
       }
     }
     if(images instanceof String){
-        imgs = new Image();
-        imgs.src = images;
-        imgs.onload = callback;
+        images = new Image();
+        images.src = images;
+        images.onload = callback;
     }
 }
 
-function preloadSounds(sounds, callback){
+function preloadSounds(sounds, prelaodedSounds , callback){
     if(sounds instanceof Array){
         var total = sounds.length, loaded = 0;
         var sds = [];

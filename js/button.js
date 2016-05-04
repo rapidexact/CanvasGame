@@ -56,5 +56,10 @@ function Button(x, y, width, height, url, callback) {
 }
 
 function Buttons(){
+    this.draw = function (_buttons) {
+        for (var key in _buttons){
+            _buttons[key].draw();
+        }
+    }
 }
 

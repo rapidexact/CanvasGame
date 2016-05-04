@@ -10,7 +10,7 @@ function Basket() {
     this.width = this.image.naturalWidth / this.maxPossibleStates;
     this.height = this.image.naturalHeight;
     this.progressInPrsnt = 1;
-    this.picture = new Sprite(this.width, this.height, 'images/basket_new.png');
+    this.picture = new Sprite(this.width, this.height, this.image.src);
     this.x = ((cnvs.clientWidth) / 2) - (this.width / 2);
     this.y = cnvs.clientHeight - this.height;
     this.draw = function () {
@@ -22,16 +22,17 @@ function Basket() {
     this.setProgressByPrsnt = function (_progress) {
         this.progressInPrsnt = Math.abs(_progress % 100) + 1;
     };
-    this.update = function (dx) {
+    this.update = function (_newPosition) {
         this.state = Math.ceil(this.progressInPrsnt / (100 / this.maxPossibleStates + 1));
         this.picture.update(this.state + "", 60, 60);
-        if (dx > cnvs.clientWidth - this.width) {
-            dx = cnvs.clientWidth - this.width / 2;
-        } else if (dx < this.width / 2) {
-            dx = this.width / 2;
+        _newPosition = _newPosition - this.width/2;
+        if (_newPosition > cnvs.clientWidth - this.width) {
+            _newPosition = cnvs.clientWidth - this.width;
         }
-        dx = dx - (this.width / 2);
-        this.x = smoothMove(this.x, dx);
+        if (_newPosition < 0) {
+            _newPosition = 0;
+        }
+        this.x = smoothMove(this.x, _newPosition);
     };
 
     this.setPos = function (dx) {
